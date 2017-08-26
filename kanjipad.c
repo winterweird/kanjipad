@@ -36,10 +36,10 @@
  */
 
 #include <gtk/gtk.h>
-#include <gtk/gtkcheckmenuitem.h>
+//#include <gtk/gtkcheckmenuitem.h>
 #include <gdk/gdkkeysyms.h>  // added for keyboard interaction purposes | unnecessary?
 #include <ctype.h>
-#include <errno.h>
+//#include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -49,6 +49,7 @@
 #include "karea.h"       // added for refactoring purposes
 #include "global_vars.h" // added for refactoring purposes
 #include "callbacks.h"   // added for refactoring purposes
+#include "engine.h"      // added for refactoring purposes
 
 // NOTE: I left the following comment as is but I have no idea what it's all
 // about... - Vegard
