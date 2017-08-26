@@ -41,7 +41,7 @@ util.o: jstroke/util.c
 kpengine: $(OBJS)
 	$(CC) -o kpengine $(OBJS) $(GLIBLIBS) $(LDFLAGS) $(GTKLIBS)
 
-kanjipad: kanjipad.o padarea.o karea.o global_vars.o callbacks.o
+kanjipad: kanjipad.o padarea.o karea.o global_vars.o callbacks.o engine.o
 	$(CC) -o kanjipad $^ $(GTKLIBS) $(LDFLAGS) $(LIBS)
 
 jdata.dat: jstroke/strokedata.h conv_jdata.pl
