@@ -2,8 +2,10 @@
 #include "global_vars.h"
 #include <errno.h> // errno
 #include <stdlib.h> // exit
+#include <gdk/gdkkeysyms.h>  // event codes
 #include "karea.h" // utf8_for_char
 #include "kanjipad.h" // pad_area functions
+#include "sensitivity.h" // update_sensitivity
 
 void exit_callback(GtkWidget* w) {
     exit(0);
@@ -113,4 +115,41 @@ void auto_look_up_callback(GtkCheckMenuItem* menu_item, gpointer user_data) {
     //gboolean is_auto_look_up = menu_item->active;
     gboolean is_auto_look_up = !pad_area->auto_look_up;
     pad_area_set_auto_look_up (pad_area, is_auto_look_up);
+}
+
+gboolean handle_keypress_callback(GtkWidget* widget, GdkEventKey* event, gpointer user_data) {
+    if (event->state & GDK_CONTROL_MASK) {
+        switch (event->keyval) {
+            case GDK_q:
+                exit_callback(widget);
+                break;
+            case GDK_c:
+                copy_callback(widget);
+                break;
+            case GDK_x:
+                clear_callback(widget);
+                break;
+            case GDK_z:
+                undo_callback(widget);
+                break;
+            case GDK_l:
+                look_up_callback(widget);
+                break;
+            case GDK_s:
+                save_callback(widget);
+                break;
+            default:
+                return FALSE;
+        }
+    }
+    return FALSE;
+}
+
+void pad_area_changed_callback (PadArea *area)
+{
+  update_sensitivity ();
+  if(area->auto_look_up)
+    {
+      look_up_callback (NULL);
+    }
 }

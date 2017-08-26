@@ -37,7 +37,7 @@
 
 #include <gtk/gtk.h>
 //#include <gtk/gtkcheckmenuitem.h> // removed due to refactoring
-#include <gdk/gdkkeysyms.h>  // added for keyboard interaction purposes
+//#include <gdk/gdkkeysyms.h>  // added for keyboard interaction purposes
 //#include <ctype.h>  // removed due to refactoring
 //#include <errno.h>  // removed due to refactoring
 #include <stdlib.h>
@@ -55,52 +55,12 @@
 // about... - Vegard
 /* Wait for child process? */
 
-void update_sensitivity ();
-
 // TODO: refactor or remove
-static void
-jisho_search_callback(GtkWidget *w) {
-    // TODO: figure out, I can't be arsed tonight.
-}
+//static void
+//jisho_search_callback(GtkWidget *w) {
+//    // TODO: figure out, I can't be arsed tonight.
+//}
 
-void
-pad_area_changed_callback (PadArea *area)
-{
-  update_sensitivity ();
-  if(area->auto_look_up)
-    {
-      look_up_callback (NULL);
-    }
-}
-
-static gboolean
-handle_keypress_callback(GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
-    if (event->state & GDK_CONTROL_MASK) {
-        switch (event->keyval) {
-            case GDK_q:
-                exit_callback(widget);
-                break;
-            case GDK_c:
-                copy_callback(widget);
-                break;
-            case GDK_x:
-                clear_callback(widget);
-                break;
-            case GDK_z:
-                undo_callback(widget);
-                break;
-            case GDK_l:
-                look_up_callback(widget);
-                break;
-            case GDK_s:
-                save_callback(widget);
-                break;
-            default:
-                return FALSE;
-        }
-    }
-    return FALSE;
-}
   
 /* Create Interface */
 
@@ -184,22 +144,27 @@ main (int argc, char **argv)
   gtk_ui_manager_insert_action_group (menu_manager, action_group, 0);
 
   error = NULL;
-  /** This is just my fuckery, tbh, but fuck it **/
-  char* env = getenv("HOME");                                         // fuckery
-  char* kanjipadData = "/.kanjipad/ui.xml";                           // fuckery
-  char* uiXmlPath = malloc(strlen(env) + strlen(kanjipadData) + 1);   // fuckery
-  strcpy(uiXmlPath, env);                                             // fuckery
-  strcat(uiXmlPath, "/.kanjipad/ui.xml");                             // fuckery
 
-  gtk_ui_manager_add_ui_from_file (menu_manager, uiXmlPath, &error);  // a little bit fuckery
+  // Modification (reduces portability - assumes Linux OS): put ui.xml in
+  // .kanjipad folder in home directory upon install and look there later when
+  // you need it - allows kanjipad to be run from anywhere, not just from the
+  // folder with ui.xml in it. - Vegard
+  // TODO: modify Makefile install to put ui.xml at the correct place upon
+  // install
+  char* env = getenv("HOME");
+  char* kanjipadData = "/.kanjipad/ui.xml";
+  char* uiXmlPath = malloc(strlen(env) + strlen(kanjipadData) + 1);
+  strcpy(uiXmlPath, env);
+  strcat(uiXmlPath, "/.kanjipad/ui.xml");
+
+  gtk_ui_manager_add_ui_from_file (menu_manager, uiXmlPath, &error);
+
+  free(uiXmlPath);
 
   if (error){
         g_message ("building menus failed: %s", error->message);
         g_error_free (error);
   }
-  
-  free(uiXmlPath);                                                    // fuckery
-  /** End of fuckery **/
 
   //Add the menu bar
   menubar = gtk_ui_manager_get_widget (menu_manager, "/MainMenu");
@@ -225,29 +190,28 @@ main (int argc, char **argv)
   gtk_widget_show (main_hbox);
 
 
-  // more fuckery
-  GtkWidget* hseparator = gtk_hseparator_new(); // fuckery
-  gtk_box_pack_start(GTK_BOX(main_vbox), hseparator, FALSE, FALSE, 0); // fuckery
-  gtk_widget_show(hseparator); // fuckery
+  // Create a new section below the rest of the interface which shows the
+  // current jukugo constructed - Vegard
+  GtkWidget* hseparator = gtk_hseparator_new();
+  gtk_box_pack_start(GTK_BOX(main_vbox), hseparator, FALSE, FALSE, 0);
+  gtk_widget_show(hseparator);
 
-  GtkWidget* jukugo_entry = gtk_entry_new(); // fuckery
-  gtk_container_add(GTK_CONTAINER(window), jukugo_entry); // fuckery
-  gtk_box_pack_start(GTK_BOX(main_vbox), jukugo_entry, TRUE, TRUE, 0); // fuckery
-  gtk_widget_show(jukugo_entry); // fuckery
+  GtkWidget* jukugo_entry = gtk_entry_new();
+  gtk_container_add(GTK_CONTAINER(window), jukugo_entry);
+  gtk_box_pack_start(GTK_BOX(main_vbox), jukugo_entry, TRUE, TRUE, 0);
+  gtk_widget_show(jukugo_entry);
 
   // note: none of this is actually really displaying, I'm not sure why
-  /** FUCKERY **/
-  label = gtk_label_new("Search Jisho.org");
-  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-//  gtk_widget_modify_font (label, font_desc); // for some reason this crashes the program
-  gtk_widget_show(label);
-
-  GtkWidget* jukugo_search_button = gtk_button_new();
-  gtk_container_add(GTK_CONTAINER(jukugo_search_button), label);
-  g_signal_connect(jukugo_search_button, "clicked",
-          G_CALLBACK(jisho_search_callback), NULL);
-  gtk_widget_show(jukugo_search_button);
-  /** FUCKERY **/
+//  label = gtk_label_new("Search Jisho.org");
+//  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+////  gtk_widget_modify_font (label, font_desc); // for some reason this crashes the program
+//  gtk_widget_show(label);
+//
+//  GtkWidget* jukugo_search_button = gtk_button_new();
+//  gtk_container_add(GTK_CONTAINER(jukugo_search_button), label);
+//  g_signal_connect(jukugo_search_button, "clicked",
+//          G_CALLBACK(jisho_search_callback), NULL);
+//  gtk_widget_show(jukugo_search_button);
 
   /*  toolbar = gtk_ui_manager_get_widget (menu_manager, "/MainToolbar");
   gtk_box_pack_start (GTK_BOX (main_hbox), toolbar, FALSE, FALSE, 0);
