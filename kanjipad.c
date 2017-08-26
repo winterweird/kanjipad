@@ -37,6 +37,7 @@
 
 #include <gtk/gtk.h>
 #include <gtk/gtkcheckmenuitem.h>
+#include <gdk/gdkkeysyms.h>  // added for keyboard interaction purposes | unnecessary?
 #include <ctype.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -45,328 +46,14 @@
 #include <unistd.h>
 
 #include "kanjipad.h"
-
-typedef struct {
-  gchar d[2];
-} kp_wchar;
-
-#define WCHAR_EQ(a,b) (a.d[0] == b.d[0] && a.d[1] == b.d[1])
+#include "karea.h"    // added for refactoring purposes
 
 /* Wait for child process? */
-
-/* user interface elements */
-//static GdkPixmap *kpixmap;
-static cairo_surface_t *kpixmap;
-GtkWidget *karea;
-GtkWidget *clear_button;
-GtkWidget *undo_button;
-GtkWidget *lookup_button;
-GtkUIManager *ui_manager;
-
-#define MAX_GUESSES 10
-kp_wchar kanjiguess[MAX_GUESSES];
-int num_guesses = 0;
-kp_wchar kselected;
-
-PadArea *pad_area;
-
-/* globals for engine communication */
-static int engine_pid;
-static GIOChannel *from_engine;
-static GIOChannel *to_engine;
-
-static char *data_file = NULL;
-static char *progname;
-
-static void exit_callback ();
-static void undo_callback ();
-static void copy_callback ();
-static void save_callback ();
-static void clear_callback ();
-static void look_up_callback ();
-static void annotate_callback (GtkCheckMenuItem *menu_item, gpointer user_data);
-static void auto_look_up_callback (GtkCheckMenuItem *menu_item, gpointer user_data);
-
-static void update_sensitivity ();
-
-static GtkActionEntry entries[] = 
-  {
-
-    { "FileMenuAction", NULL, "_File" },                  /* name, stock id, label */
-    { "CharacterMenuAction", NULL, "_Character" },
-    { "EditMenuAction", NULL, "_Edit" },
-
-    //file  
-    { "QuitAction", NULL,
-      "_Quit", "<control>Q",    
-      "Quit",
-      G_CALLBACK (exit_callback) },
-
-    //edit
-    { "UndoAction", NULL,
-      "_Undo", "<control>Z",  
-      "undo",
-      G_CALLBACK (undo_callback) },
-
-    { "CopyAction", NULL,
-      "_Copy", "<control>C",  
-      "copy",
-      G_CALLBACK (copy_callback) },
-
-    //character
-    { "LookupAction", NULL,   
-      "_Lookup", "<control>L",          
-      "Look-up the character drawn",    
-      G_CALLBACK (look_up_callback) },
-    
-    { "ClearAction", NULL,
-      "_Clear","<control>X",  
-      "Clear the drawing area",
-      G_CALLBACK (clear_callback) },
-
-    { "SaveAction", NULL,
-      "_Save","<control>S",  
-      "write out the points in the character, \
-and the selected character to a file \"samples.dat\" in the \
-current directory. This is intended for making a file of \
-characters for automated testing",
-      G_CALLBACK (save_callback) }  
-};
-
-static guint n_entries = G_N_ELEMENTS (entries);
-
-
-static GtkToggleActionEntry toggle_entries[] =
-{
-  { "AnnotateAction", NULL,
-    "_Annotate", NULL,  
-    "Display stroke order",
-    G_CALLBACK (annotate_callback), TRUE }, 
-
-  { "AutoLookupAction", NULL,
-    "_Auto Lookup", NULL,  
-    "Lookup when a stroke is drawn",
-    G_CALLBACK (auto_look_up_callback), TRUE }
-};
-
-static guint n_toggle_entries = G_N_ELEMENTS (toggle_entries);
+void update_sensitivity ();
 
 static void
-karea_get_char_size (GtkWidget *widget,
-		     int       *width,
-		     int       *height)
-{
-  PangoLayout *layout = gtk_widget_create_pango_layout (widget, "\xe6\xb6\x88");
-  pango_layout_get_pixel_size (layout, width, height);
-
-  g_object_unref (layout);
-}
-
-static gchar *
-utf8_for_char (kp_wchar ch)
-{
-  gchar *string_utf;
-  GError *err = NULL;
-  gchar str[3];
-
-  str[0] = ch.d[0] + 0x80;
-  str[1] = ch.d[1] + 0x80;
-  str[2] = 0;
-
-  string_utf = g_convert (str, -1, "UTF-8", "EUC-JP", NULL, NULL, &err);
-  if (!string_utf)
-    {
-      g_printerr ("Cannot convert string from EUC-JP to UTF-8: %s\n",
-		  err->message);
-      exit (1);
-    }
-
-  return string_utf;
-}
-
-static void
-karea_draw_character (GtkWidget *w,
-		      int        index,
-		      int        selected)
-{
-  PangoLayout *layout;
-  gchar *string_utf;
-  gint char_width, char_height;
-  gint x;
-
-  karea_get_char_size (w, &char_width, &char_height);
-
-  if (selected >= 0)
-    {
-
-      gdk_draw_rectangle (kpixmap,
-			  selected ? gtk_widget_get_style(w)->bg_gc[GTK_STATE_SELECTED] :
-			  gtk_widget_get_style(w)->white_gc,
-			  TRUE,
-			  0, (char_height + 6) *index, w->allocation.width - 1, char_height + 5);
-
-    }
-
-  string_utf = utf8_for_char (kanjiguess[index]);
-  layout = gtk_widget_create_pango_layout (w, string_utf);
-  g_free (string_utf);
-
- GtkAllocation *allocation = g_new0 (GtkAllocation, 1);
- gtk_widget_get_allocation(GTK_WIDGET(w), allocation);
- 
-  x = (allocation->width - char_width) / 2;
-
-  gdk_draw_layout (kpixmap, 
-		   (selected > 0) ? gtk_widget_get_style(w)->white_gc :
-		                    gtk_widget_get_style(w)->black_gc,
-		   x, (char_height + 6) * index + 3, layout);
-  
-  g_object_unref (layout);
-  g_free (allocation);   
-}
-
-
-static void
-karea_draw (GtkWidget *w)
-{
-  GtkAllocation *allocation = g_new0 (GtkAllocation, 1);
-  gtk_widget_get_allocation(GTK_WIDGET(w), allocation);
- 
-  gint width = allocation->width;
-  gint height = allocation->height;
-
-  g_free (allocation);
-  
-  int i;
-
-    gdk_draw_rectangle (kpixmap, 
-		      gtk_widget_get_style(w)->white_gc, TRUE,
-		      1, 1, width, height);
-  
-
-  for (i=0; i<num_guesses; i++)
-    {
-      if (WCHAR_EQ (kselected, kanjiguess[i]))
-	karea_draw_character (w, i, 1);
-      else
-	karea_draw_character (w, i, -1);
-    }
-
-  gtk_widget_queue_draw (w);
-}
-
-static int
-karea_configure_event (GtkWidget *w, GdkEventConfigure *event)
-{
-  if (kpixmap)
-    g_object_unref (kpixmap);
-
-  kpixmap = gdk_pixmap_new (gtk_widget_get_window(w), event->width, event->height, -1);
-
-  karea_draw (w);
-  
-  return TRUE;
-}
-
-static int
-karea_expose_event (GtkWidget *w, GdkEventExpose *event)
-{
-  if (!kpixmap)
-    return 0;
-  
-  gdk_draw_drawable (gtk_widget_get_window(w),
-		     gtk_widget_get_style(w)->fg_gc[GTK_STATE_NORMAL], kpixmap,
-		     event->area.x, event->area.y,
-		     event->area.x, event->area.y,
-		     event->area.width, event->area.height);
-  
-    return 0;
-}
-
-static int
-karea_erase_selection (GtkWidget *w)
-{
-  int i;
-  if (kselected.d[0] || kselected.d[1])
-    {
-      for (i=0; i<num_guesses; i++)
-	{
-	  if (WCHAR_EQ (kselected, kanjiguess[i]))
-	    {
-	      karea_draw_character (w, i, 0);
-	    }
-	}
-    }
-  return TRUE;
-}
-
-static void
-karea_primary_clear (GtkClipboard *clipboard,
-		     gpointer      owner)
-{
-  GtkWidget *w = owner;
-  
-  karea_erase_selection (w);
-  kselected.d[0] = kselected.d[1] = 0;
-
-  update_sensitivity ();
-  gtk_widget_queue_draw (w);
-}
-
-static void
-karea_primary_get (GtkClipboard     *clipboard,
-		   GtkSelectionData *selection_data,
-		   guint             info,
-		   gpointer          owner)
-{
-  if (kselected.d[0] || kselected.d[1])
-    {
-      gchar *string_utf = utf8_for_char (kselected);
-      gtk_selection_data_set_text (selection_data, string_utf, -1);
-      g_free (string_utf);
-    }
-}
-
-static int
-karea_button_press_event (GtkWidget *w, GdkEventButton *event)
-{
-  int j;
-  gint char_height;
-  GtkClipboard *clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);
-
-  static const GtkTargetEntry targets[] = {
-    { "STRING", 0, 0 },
-    { "TEXT",   0, 0 }, 
-    { "COMPOUND_TEXT", 0, 0 },
-    { "UTF8_STRING", 0, 0 }
-  };
-
-  karea_erase_selection (w);
-
-  karea_get_char_size (w, NULL, &char_height);
-
-  j = event->y / (char_height + 6);
-  if (j < num_guesses)
-    {
-      kselected = kanjiguess[j];
-      karea_draw_character (w, j, 1);
-      
-      if (!gtk_clipboard_set_with_owner (clipboard, targets, G_N_ELEMENTS (targets),
-					 karea_primary_get, karea_primary_clear, G_OBJECT (w)))
-	karea_primary_clear (clipboard, w);
-    }
-  else
-    {
-      kselected.d[0] = 0;
-      kselected.d[1] = 0;
-      if (gtk_clipboard_get_owner (clipboard) == G_OBJECT (w))
-	gtk_clipboard_clear (clipboard);
-    }
-
-  update_sensitivity ();
-  gtk_widget_queue_draw (w);
-
-  return TRUE;
+jisho_search_callback(GtkWidget *w) {
+    // TODO: figure out, I can't be arsed tonight.
 }
 
 static void 
@@ -526,7 +213,7 @@ update_path_sensitive (const gchar *path,
     gtk_widget_set_sensitive (widget, sensitive);*/
 }
 
-static void
+void
 update_sensitivity ()
 {
   gboolean have_selected = (kselected.d[0] || kselected.d[1]);
@@ -543,7 +230,34 @@ update_sensitivity ()
   update_path_sensitive ("/Character/Save", have_strokes);
 }
 
-#define BUFLEN 256
+static gboolean
+handle_keypress_callback(GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
+    if (event->state & GDK_CONTROL_MASK) {
+        switch (event->keyval) {
+            case GDK_q:
+                exit_callback(widget);
+                break;
+            case GDK_c:
+                copy_callback(widget);
+                break;
+            case GDK_x:
+                clear_callback(widget);
+                break;
+            case GDK_z:
+                undo_callback(widget);
+                break;
+            case GDK_l:
+                look_up_callback(widget);
+                break;
+            case GDK_s:
+                save_callback(widget);
+                break;
+            default:
+                return FALSE;
+        }
+    }
+    return FALSE;
+}
 
 static gboolean
 engine_input_handler (GIOChannel *source, GIOCondition condition, gpointer data)
@@ -705,6 +419,8 @@ main (int argc, char **argv)
 
   g_signal_connect (window, "destroy",
 		    G_CALLBACK (exit_callback), NULL);
+  g_signal_connect (window, "key_press_event",
+          G_CALLBACK (handle_keypress_callback), NULL);
 
   gtk_window_set_title (GTK_WINDOW(window), "KanjiPad");
   
@@ -726,16 +442,27 @@ main (int argc, char **argv)
   gtk_ui_manager_insert_action_group (menu_manager, action_group, 0);
 
   error = NULL;
-  gtk_ui_manager_add_ui_from_file (menu_manager, "ui.xml", &error);
+  /** This is just my fuckery, tbh, but fuck it **/
+  char* env = getenv("HOME");                                         // fuckery
+  char* kanjipadData = "/.kanjipad/ui.xml";                           // fuckery
+  char* uiXmlPath = malloc(strlen(env) + strlen(kanjipadData) + 1);   // fuckery
+  strcpy(uiXmlPath, env);                                             // fuckery
+  strcat(uiXmlPath, "/.kanjipad/ui.xml");                             // fuckery
+
+  gtk_ui_manager_add_ui_from_file (menu_manager, uiXmlPath, &error);  // a little bit fuckery
 
   if (error){
         g_message ("building menus failed: %s", error->message);
         g_error_free (error);
   }
+  
+  free(uiXmlPath);                                                    // fuckery
+  /** End of fuckery **/
 
   //Add the menu bar
   menubar = gtk_ui_manager_get_widget (menu_manager, "/MainMenu");
   gtk_box_pack_start (GTK_BOX (main_vbox), menubar, FALSE, FALSE, 0);
+
   
   /*accel_group = gtk_accel_group_new ();
   factory = gtk_item_factory_new (GTK_TYPE_MENU_BAR, "<main>", accel_group);
@@ -754,7 +481,32 @@ main (int argc, char **argv)
   gtk_container_add (GTK_CONTAINER(window), main_hbox);
   gtk_box_pack_start (GTK_BOX(main_vbox), main_hbox, TRUE, TRUE, 0);
   gtk_widget_show (main_hbox);
-  
+
+
+  // more fuckery
+  GtkWidget* hseparator = gtk_hseparator_new(); // fuckery
+  gtk_box_pack_start(GTK_BOX(main_vbox), hseparator, FALSE, FALSE, 0); // fuckery
+  gtk_widget_show(hseparator); // fuckery
+
+  GtkWidget* jukugo_entry = gtk_entry_new(); // fuckery
+  gtk_container_add(GTK_CONTAINER(window), jukugo_entry); // fuckery
+  gtk_box_pack_start(GTK_BOX(main_vbox), jukugo_entry, TRUE, TRUE, 0); // fuckery
+  gtk_widget_show(jukugo_entry); // fuckery
+
+  // note: none of this is actually really displaying, I'm not sure why
+  /** FUCKERY **/
+  label = gtk_label_new("Search Jisho.org");
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+//  gtk_widget_modify_font (label, font_desc); // for some reason this crashes the program
+  gtk_widget_show(label);
+
+  GtkWidget* jukugo_search_button = gtk_button_new();
+  gtk_container_add(GTK_CONTAINER(jukugo_search_button), label);
+  g_signal_connect(jukugo_search_button, "clicked",
+          G_CALLBACK(jisho_search_callback), NULL);
+  gtk_widget_show(jukugo_search_button);
+  /** FUCKERY **/
+
   /*  toolbar = gtk_ui_manager_get_widget (menu_manager, "/MainToolbar");
   gtk_box_pack_start (GTK_BOX (main_hbox), toolbar, FALSE, FALSE, 0);
   gtk_window_add_accel_group (GTK_WINDOW (window), gtk_ui_manager_get_accel_group (menu_manager));
