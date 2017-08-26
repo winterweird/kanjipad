@@ -53,7 +53,7 @@
 /* Limit list to what we can afford (5), or what will fit on screen at most.
  * #define diMaxListCount     (diScreenHeight/diFontLineHeight)
  */
-#define diMaxListCount       5
+#define diMaxListCount       100
 #define diMaxXyPairs       256	/* Max pairs in stroke... */
 
 /* ----- List Memory ---------------------------------------------------------
