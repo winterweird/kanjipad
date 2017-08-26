@@ -16,6 +16,25 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+/* NOTE: Further changes, enhancements and modifications have later been made
+ * in accordance with this license by Vegard Itland (2017). I adopted this as a
+ * personal project for personal use only, and as such I am making changes which
+ * may reduce portability and/or usability for other purposes. The code was
+ * cloned from the git repo https://github.com/boamaod/kanjipad.git at
+ * 2017-08-25. I originally discovered the program at
+ * http://fishsoup.net/software/kanjipad/ - however, I was unable to make it
+ * compile, probably due to the usage of deprecated and/or obsolete GTK
+ * constructs which my compiler didn't recognize.
+ *
+ * I take no credit for any of the work other than the additions and
+ * modifications I have since written. I may refactor the code, but I will try
+ * to properly mark each file with the original copyright notice. Code may be
+ * assumed to be written by the original author unless otherwise noted.
+ *
+ * Best regards,
+ * Vegard Itland.
+ */
+
 #include <gtk/gtk.h>
 #include <gtk/gtkcheckmenuitem.h>
 #include <ctype.h>
