@@ -1,5 +1,6 @@
 #include "karea.h"
 #include "global_vars.h"
+#include "sensitivity.h" // update_sensitivity
 #include <stdlib.h> // exit
 
 void karea_get_char_size(GtkWidget* widget, int* width, int* height) {
@@ -95,6 +96,16 @@ int karea_configure_event(GtkWidget *w, GdkEventConfigure *event) {
         g_object_unref (kpixmap);
 
     kpixmap = gdk_pixmap_new (gtk_widget_get_window(w), event->width, event->height, -1);
+    // This is a replacement which may become valid if I replace all the
+    // gdk_draw<stuff> calls, but for the time being it's commented out.
+    // The problem is that if I just flat-out replace it, all the calls
+    // expecting a pointer to a different kind of structure freak the fuck out
+    // and no drawing can take place. I'll probably have to replace all the
+    // calls in one go at one point and see if it works. - Vegard
+//    kpixmap = gdk_window_create_similar_surface (gtk_widget_get_window(w),
+//                                                 CAIRO_CONTENT_COLOR,
+//                                                 event->width,
+//                                                 event->height);
 
     karea_draw (w);
   
