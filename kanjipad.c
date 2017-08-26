@@ -36,14 +36,14 @@
  */
 
 #include <gtk/gtk.h>
-//#include <gtk/gtkcheckmenuitem.h>
-#include <gdk/gdkkeysyms.h>  // added for keyboard interaction purposes | unnecessary?
-#include <ctype.h>
-//#include <errno.h>
+//#include <gtk/gtkcheckmenuitem.h> // removed due to refactoring
+#include <gdk/gdkkeysyms.h>  // added for keyboard interaction purposes
+//#include <ctype.h>  // removed due to refactoring
+//#include <errno.h>  // removed due to refactoring
 #include <stdlib.h>
-#include <stdio.h>
+//#include <stdio.h>  // removed due to refactoring
 #include <string.h>
-#include <unistd.h>
+//#include <unistd.h> // removed due to refactoring
 
 #include "kanjipad.h"
 #include "karea.h"       // added for refactoring purposes
