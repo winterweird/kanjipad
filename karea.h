@@ -24,6 +24,7 @@
 #define KAREA_RELATED_FUNCTIONS_HEADER
 
 #include "datastructure_definitions.h"
+#include <gtk/gtk.h>
 
 void karea_get_char_size(GtkWidget* widget, int* width, int* height);
 

@@ -1,19 +1,4 @@
-#include <gtk/gtk.h>
-
-typedef struct _PadArea PadArea;
-
-struct _PadArea {
-  GtkWidget *widget;
-
-  gint annotate;
-  gint auto_look_up;
-  GList *strokes;
-
-  /* Private */
-  GdkPixmap *pixmap;
-  GList *curstroke;
-  int instroke;
-};
+#include "datastructure_definitions.h"
 
 PadArea *pad_area_create ();
 void pad_area_clear (PadArea *area);

@@ -1,6 +1,8 @@
 #ifndef KANJIPAD_CALLBACK_FUNCTIONS_HEADER
 #define KANJIPAD_CALLBACK_FUNCTIONS_HEADER
 
+#include <gtk/gtkcheckmenuitem.h>
+
 void exit_callback();
 void undo_callback();
 void copy_callback();
