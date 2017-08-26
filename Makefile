@@ -53,6 +53,8 @@ install: kanjipad kpengine jdata.dat
 	install -m 0755 kpengine $(DESTDIR)$(BINDIR)/kpengine
 	install -d $(DESTDIR)$(LIBDIR)
 	install -m 0644 jdata.dat $(DESTDIR)$(LIBDIR)/jdata.dat
+	install -d ~/.kanjipad
+	install -m 0644 ui.xml ~/.kanjipad/ui.xml
 
 clean:
 	rm -rf *.o jdata.dat kpengine kanjipad
