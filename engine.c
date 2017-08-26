@@ -1,6 +1,8 @@
 #include "engine.h"
 #include "global_vars.h"
+#include "karea.h" // karea_draw
 #include <stdlib.h> // exit
+#include <ctype.h> // isspace
 #include <errno.h> // errno
 
 gboolean engine_input_handler (GIOChannel *source, GIOCondition condition, gpointer data) {

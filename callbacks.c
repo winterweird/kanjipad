@@ -1,6 +1,9 @@
 #include "callbacks.h"
 #include "global_vars.h"
-#include <errno.h>
+#include <errno.h> // errno
+#include <stdlib.h> // exit
+#include "karea.h" // utf8_for_char
+#include "kanjipad.h" // pad_area functions
 
 void exit_callback(GtkWidget* w) {
     exit(0);

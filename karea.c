@@ -1,5 +1,6 @@
 #include "karea.h"
 #include "global_vars.h"
+#include <stdlib.h> // exit
 
 void karea_get_char_size(GtkWidget* widget, int* width, int* height) {
     PangoLayout *layout = gtk_widget_create_pango_layout (widget, "\xe6\xb6\x88");

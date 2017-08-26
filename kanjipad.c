@@ -57,6 +57,7 @@
 
 void update_sensitivity ();
 
+// TODO: refactor or remove
 static void
 jisho_search_callback(GtkWidget *w) {
     // TODO: figure out, I can't be arsed tonight.
