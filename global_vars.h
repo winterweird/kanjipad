@@ -25,7 +25,7 @@ extern GIOChannel* from_engine;
 extern GIOChannel* to_engine;
 
 extern char* data_file;
-extern char* progname;
+extern const char* progname;
 
 // 9 is hardcoded based on the count I made earlier, this might create problems.
 extern GtkActionEntry entries[9];

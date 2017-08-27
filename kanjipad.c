@@ -51,29 +51,46 @@
 #include "callbacks.h"   // added for refactoring purposes
 #include "engine.h"      // added for refactoring purposes
 
-// NOTE: I left the following comment as is but I have no idea what it's all
+// NOTE: I left the following comments as is but I have no idea what it's all
 // about... - Vegard
 /* Wait for child process? */
-
-// TODO: refactor or remove
-//static void
-//jisho_search_callback(GtkWidget *w) {
-//    // TODO: figure out, I can't be arsed tonight.
-//}
-
   
 /* Create Interface */
 
-void
-usage ()
-{
+// print usage and exit
+void usage () {
   fprintf(stderr, "Usage: %s [-f/--data-file FILE]\n", progname);
   exit (1);
 }
 
-int 
-main (int argc, char **argv)
-{
+// return the last element of the path to the program file
+const char* getProgName(const char* p) {
+    const char* progname = p;
+    while (*p) {
+        if (*p == '/') progname = p + 1;
+        p++;
+    }
+    return progname;
+}
+
+// if data file is given, set data file name - otherwise if arguments given,
+// print usage and exit
+void handleArgs(int argc, char** argv) {
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "--data-file") == 0 || strcmp(argv[i], "-f") == 0) {
+            i++;
+            if (i < argc)
+                data_file = argv[i];
+            else
+                usage();
+        }
+        else {
+            usage();
+        }
+    }
+}
+
+int main (int argc, char **argv) {
   GtkWidget *window;
   GtkWidget *main_hbox;
   GtkWidget *vseparator;
@@ -86,35 +103,15 @@ main (int argc, char **argv)
   GtkAccelGroup *accel_group;
 
   PangoFontDescription *font_desc;
-  int i;
-  char *p;
 
-  p = progname = argv[0];
-  while (*p)
-    {
-      if (*p == '/') progname = p+1;
-      p++;
-    }
+  // I'm not sure why this needs to be a thing, but fine... - Vegard
+  progname = getProgName(argv[0]);
+
+  handleArgs(argc, argv);
 
   gtk_init (&argc, &argv);
 
-  for (i=1; i<argc; i++)
-    {
-      if (!strcmp(argv[i], "--data-file") ||
-	  !strcmp(argv[i], "-f"))
-	{
-	  i++;
-	  if (i < argc)
-	    data_file = argv[i];
-	  else
-	    usage();
-	}
-      else
-	{
-	  usage();
-	}
-    }
-
+  // window creation and setup
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_window_set_resizable (GTK_WINDOW (window), TRUE);
   gtk_window_set_default_size (GTK_WINDOW (window), 350, 350);
@@ -125,6 +122,7 @@ main (int argc, char **argv)
           G_CALLBACK (handle_keypress_callback), NULL);
 
   gtk_window_set_title (GTK_WINDOW(window), "KanjiPad");
+  // end window creation and setup
   
   main_vbox = gtk_vbox_new (FALSE, 0);
   gtk_container_add (GTK_CONTAINER (window), main_vbox);

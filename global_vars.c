@@ -20,7 +20,7 @@ GIOChannel *from_engine;
 GIOChannel *to_engine;
 
 char *data_file = NULL;
-char *progname;
+const char *progname;
 
 GtkActionEntry entries[] = {
 
