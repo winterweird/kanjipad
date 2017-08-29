@@ -16,9 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/** Refactored by Vegard Itland, 2017-08-26 **/
-
-// This header declares apparently karea-related functions.
+/** Refactored by Vegard Itland (2017) **/
 
 #ifndef KAREA_RELATED_FUNCTIONS_HEADER
 #define KAREA_RELATED_FUNCTIONS_HEADER

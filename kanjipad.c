@@ -28,8 +28,8 @@
  *
  * I take no credit for any of the work other than the additions and
  * modifications I have since written. I may refactor the code, but I will try
- * to properly mark each file with the original copyright notice. Code may be
- * assumed to be written by the original author unless otherwise noted.
+ * to properly mark each file with the original copyright notice. To see the
+ * original project code, checkout commit 1097e82.
  *
  * Best regards,
  * Vegard Itland.
