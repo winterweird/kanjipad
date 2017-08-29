@@ -26,6 +26,7 @@
 #include "karea.h" // utf8_for_char
 #include "kanjipad.h" // pad_area functions
 #include "sensitivity.h" // update_sensitivity
+#include "jisho_search.h" // jisho_search_keyword
 
 void exit_callback(GtkWidget* w) {
     exit(0);
@@ -125,6 +126,19 @@ void look_up_callback(GtkWidget* w) {
     g_string_free (message, FALSE);
 }
 
+void append_jukugo_callback(GtkWidget* w) {
+    if (kselected.d[0] || kselected.d[1]) {
+        gchar* string_utf = utf8_for_char(kselected);
+        
+        GtkEntryBuffer* buffer = gtk_entry_get_buffer(GTK_ENTRY(jukugo_entry));
+        gint len = gtk_entry_buffer_get_length(GTK_ENTRY_BUFFER(buffer));
+
+        gtk_entry_buffer_insert_text(buffer, len, string_utf, -1);
+
+        g_free(string_utf);
+    }
+}
+
 void query_jisho(GtkWidget* w) {
     // Take content from jukugo_entry and use it to search jisho
     if (gtk_entry_get_text_length(GTK_ENTRY(jukugo_entry)) == 0)
@@ -185,6 +199,16 @@ gboolean handle_keypress_callback(GtkWidget* widget, GdkEventKey* event, gpointe
                 return FALSE;
         }
     }
+    return FALSE;
+}
+
+gboolean jukugo_keypress_callback(GtkWidget* widget, GdkEventKey* event, gpointer user_data) {
+    switch(event->keyval) {
+        case GDK_Return:
+            query_jisho(widget);
+            break;
+    }
+
     return FALSE;
 }
 

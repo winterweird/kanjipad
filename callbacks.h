@@ -32,11 +32,15 @@ void save_callback();
 void clear_callback();
 void look_up_callback();
 void append_jukugo_callback();
+void query_jisho();
 void clear_search_field();
 void annotate_callback(GtkCheckMenuItem *menu_item, gpointer user_data);
 void auto_look_up_callback(GtkCheckMenuItem *menu_item, gpointer user_data);
 
 // function which handles keypresses (bound to window)
 gboolean handle_keypress_callback(GtkWidget *widget, GdkEventKey *event, gpointer user_data);
+
+// function which handles keypresses (bound to jukugo_entry)
+gboolean jukugo_keypress_callback(GtkWidget* widget, GdkEventKey* event, gpointer user_data);
 
 #endif /* KANJIPAD_CALLBACK_FUNCTIONS_HEADER */

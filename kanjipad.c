@@ -35,6 +35,9 @@
  * Vegard Itland.
  */
 
+// TODO: I have to properly display the info returned from jisho
+// TODO: Query caching?
+
 #include <gtk/gtk.h>
 //#include <gtk/gtkcheckmenuitem.h> // removed due to refactoring
 //#include <gdk/gdkkeysyms.h>  // added for keyboard interaction purposes
@@ -199,6 +202,9 @@ int main (int argc, char **argv) {
   gtk_box_pack_start(GTK_BOX(entryHbox), jukugo_entry, TRUE, TRUE, 0);
   gtk_widget_show(jukugo_entry);
 
+  g_signal_connect(jukugo_entry, "key_press_event",
+          G_CALLBACK(jukugo_keypress_callback), NULL);
+
   // note: none of this is actually really displaying, I'm not sure why
 //  label = gtk_label_new("Search Jisho.org");
 //  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
@@ -314,6 +320,21 @@ int main (int argc, char **argv) {
   g_signal_connect(button, "clicked",
           G_CALLBACK(clear_search_field), NULL);
 
+  gtk_box_pack_start (GTK_BOX (entryHbox), button, FALSE, FALSE, 0);
+  gtk_widget_show (button);
+
+  // make a label for the jisho search button
+  label = gtk_label_new("\xe2\x9e\xa4"); // black right arrowhead
+  gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+  gtk_widget_modify_font(label, font_desc);
+  gtk_widget_show(label);
+
+  // make a button to search jisho with
+  GtkWidget* searchJishoButton = button = gtk_button_new();
+  gtk_container_add(GTK_CONTAINER(button), label);
+  g_signal_connect(button, "clicked",
+          G_CALLBACK(query_jisho), NULL);
+    
   gtk_box_pack_start (GTK_BOX (entryHbox), button, FALSE, FALSE, 0);
   gtk_widget_show (button);
 
