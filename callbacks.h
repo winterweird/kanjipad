@@ -31,6 +31,8 @@ void copy_callback();
 void save_callback();
 void clear_callback();
 void look_up_callback();
+void append_jukugo_callback();
+void clear_search_field();
 void annotate_callback(GtkCheckMenuItem *menu_item, gpointer user_data);
 void auto_look_up_callback(GtkCheckMenuItem *menu_item, gpointer user_data);
 

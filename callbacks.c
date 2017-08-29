@@ -125,6 +125,27 @@ void look_up_callback(GtkWidget* w) {
     g_string_free (message, FALSE);
 }
 
+void query_jisho(GtkWidget* w) {
+    // Take content from jukugo_entry and use it to search jisho
+    if (gtk_entry_get_text_length(GTK_ENTRY(jukugo_entry)) == 0)
+        return; // nothing to search for
+    const gchar* searchTerm = gtk_entry_get_text(GTK_ENTRY(jukugo_entry));
+    char* results = jisho_search_keyword(searchTerm);
+
+    if (results == NULL) {
+        g_printerr("Could not fetch data for query '%s' from jisho\n", searchTerm);
+    }
+    else {
+        printf("results:\n%s\n", results);
+
+        free(results);
+    }
+}
+
+void clear_search_field(GtkWidget* w) {
+    gtk_entry_set_text(GTK_ENTRY(jukugo_entry), "");
+}
+
 void annotate_callback(GtkCheckMenuItem* menu_item, gpointer user_data) {
     //gboolean is_annotate = gtk_check_menu_item_get_active(menu_item);
     gboolean is_annotate = !pad_area->annotate;
@@ -158,6 +179,8 @@ gboolean handle_keypress_callback(GtkWidget* widget, GdkEventKey* event, gpointe
             case GDK_s:
                 save_callback(widget);
                 break;
+            case GDK_a:
+                append_jukugo_callback(widget);
             default:
                 return FALSE;
         }

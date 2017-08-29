@@ -354,7 +354,7 @@ void pad_area_clear (PadArea *area)
 void pad_area_undo_stroke (PadArea *area)
 {
 
-  if (g_list_length(area->strokes)==1)
+  if (g_list_length(area->strokes)<=1)
     {
       pad_area_clear (area);
     }

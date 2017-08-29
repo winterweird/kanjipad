@@ -21,6 +21,7 @@
 #include "karea.h"
 #include "global_vars.h"
 #include "sensitivity.h" // update_sensitivity
+#include "callbacks.h" // clear input box callback
 #include <stdlib.h> // exit
 
 void karea_get_char_size(GtkWidget* widget, int* width, int* height) {
@@ -32,6 +33,7 @@ void karea_get_char_size(GtkWidget* widget, int* width, int* height) {
 
 gchar* utf8_for_char(kp_wchar ch) {
     gchar *string_utf;
+    gchar *backup; // just in case something goes wrong
     GError *err = NULL;
     gchar str[3];
 
@@ -40,10 +42,17 @@ gchar* utf8_for_char(kp_wchar ch) {
     str[2] = 0;
 
     string_utf = g_convert (str, -1, "UTF-8", "EUC-JP", NULL, NULL, &err);
+    
+    // create a backup character - maru - in case of error (EUC-JP code a2fe)
+    str[0] = 0xa2;
+    str[1] = 0xfe;
+    str[2] = 0;
+    backup = g_convert (str, -1, "UTF-8", "EUC-JP", NULL, NULL, &err);
     if (!string_utf) {
         g_printerr ("Cannot convert string from EUC-JP to UTF-8: %s\n",
               err->message);
-        exit (1);
+        string_utf = backup;
+//        exit (1);
     }
 
     return string_utf;
@@ -90,6 +99,15 @@ void karea_draw(GtkWidget *w) {
 
     gint width = allocation->width;
     gint height = allocation->height;
+
+    // since we're looking to be able to scroll through the options, let's set a
+    // vbox size request to make it grow big enough to scroll - Vegard
+    gint char_width;
+    gint char_height;
+
+    karea_get_char_size(w, &char_width, &char_height);
+    height = (char_height + 6)*num_guesses; // based on code in karea_draw_character function
+    gtk_widget_set_size_request(w, width, height);
 
     g_free (allocation);
 
@@ -200,6 +218,10 @@ int karea_button_press_event(GtkWidget* w, GdkEventButton* event) {
         if (!gtk_clipboard_set_with_owner (clipboard, targets, G_N_ELEMENTS (targets),
                     karea_primary_get, karea_primary_clear, G_OBJECT (w)))
             karea_primary_clear (clipboard, w);
+
+        if (event->type == GDK_2BUTTON_PRESS) {
+            append_jukugo_callback(w);
+        }
     }
     else {
         kselected.d[0] = 0;

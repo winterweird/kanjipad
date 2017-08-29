@@ -147,8 +147,6 @@ int main (int argc, char **argv) {
   // .kanjipad folder in home directory upon install and look there later when
   // you need it - allows kanjipad to be run from anywhere, not just from the
   // folder with ui.xml in it. - Vegard
-  // TODO: modify Makefile install to put ui.xml at the correct place upon
-  // install
   char* env = getenv("HOME");
   char* kanjipadData = "/.kanjipad/ui.xml";
   char* uiXmlPath = malloc(strlen(env) + strlen(kanjipadData) + 1);
@@ -183,7 +181,6 @@ int main (int argc, char **argv) {
   //gtk_window_add_accel_group (GTK_WINDOW (window), accel_group);
 
   main_hbox = gtk_hbox_new (FALSE, 0);
-  gtk_container_add (GTK_CONTAINER(window), main_hbox);
   gtk_box_pack_start (GTK_BOX(main_vbox), main_hbox, TRUE, TRUE, 0);
   gtk_widget_show (main_hbox);
 
@@ -194,9 +191,12 @@ int main (int argc, char **argv) {
   gtk_box_pack_start(GTK_BOX(main_vbox), hseparator, FALSE, FALSE, 0);
   gtk_widget_show(hseparator);
 
-  GtkWidget* jukugo_entry = gtk_entry_new();
-  gtk_container_add(GTK_CONTAINER(window), jukugo_entry);
-  gtk_box_pack_start(GTK_BOX(main_vbox), jukugo_entry, TRUE, TRUE, 0);
+  GtkWidget* entryHbox = gtk_hbox_new(FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(main_vbox), entryHbox, FALSE, FALSE, 0);
+  gtk_widget_show(entryHbox);
+
+  jukugo_entry = gtk_entry_new();
+  gtk_box_pack_start(GTK_BOX(entryHbox), jukugo_entry, TRUE, TRUE, 0);
   gtk_widget_show(jukugo_entry);
 
   // note: none of this is actually really displaying, I'm not sure why
@@ -229,8 +229,12 @@ int main (int argc, char **argv) {
   
   /* Area in which to draw guesses */
 
+  GtkWidget* scrollingSuggestions = gtk_scrolled_window_new(NULL, NULL);
+  gtk_box_pack_start(GTK_BOX(main_hbox), scrollingSuggestions, FALSE, FALSE, 0);
+  gtk_widget_show(scrollingSuggestions);
+
   vbox = gtk_vbox_new (FALSE, 0);
-  gtk_box_pack_start (GTK_BOX (main_hbox), vbox, FALSE, FALSE, 0);
+  gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (scrollingSuggestions), vbox);
   gtk_widget_show (vbox);
 
   karea = gtk_drawing_area_new();
@@ -253,6 +257,7 @@ int main (int argc, char **argv) {
   
   gtk_box_pack_start (GTK_BOX (vbox), karea, TRUE, TRUE, 0);
   gtk_widget_show (karea);
+
 
   /* Buttons */
   label = gtk_label_new ("\xe5\xbc\x95");
@@ -295,6 +300,21 @@ int main (int argc, char **argv) {
 		    G_CALLBACK (clear_callback), NULL);
 
   gtk_box_pack_start (GTK_BOX (vbox), button, FALSE, FALSE, 0);
+  gtk_widget_show (button);
+
+  // make a label for clearing input from search box
+  label = gtk_label_new("\xe2\x9c\x96"); // thick multiplication x
+  gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+  gtk_widget_modify_font(label, font_desc);
+  gtk_widget_show(label);
+  
+  // make a button to clear input from search box with
+  GtkWidget* clearSearchFieldButton = button = gtk_button_new();
+  gtk_container_add(GTK_CONTAINER(button), label);
+  g_signal_connect(button, "clicked",
+          G_CALLBACK(clear_search_field), NULL);
+
+  gtk_box_pack_start (GTK_BOX (entryHbox), button, FALSE, FALSE, 0);
   gtk_widget_show (button);
 
   gtk_widget_show(window);

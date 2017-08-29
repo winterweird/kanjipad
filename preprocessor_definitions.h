@@ -26,7 +26,7 @@
 #define WCHAR_EQ(a,b) (a.d[0] == b.d[0] && a.d[1] == b.d[1])
 
 // used for defining the size of a global array variable
-#define MAX_GUESSES 10
+#define MAX_GUESSES 100
 
 #define BUFLEN 256
 
