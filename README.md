@@ -1,5 +1,4 @@
-KanjiPad
---------
+# KanjiPad
 
 KanjiPad is a very simple program for handwriting recognition -
 The user draws a character into the box, then requests translation.
@@ -32,15 +31,13 @@ see the XInput HOWTO at:
 
   http://www.gtk.org/~otaylor/xinput/XInput-HOWTO.html
 
-Availability
-------------
+## Availability
 
 The latest version of KanjiPad is available from 
 
   http://fishsoup.net/software/kanjipad/
 
-Prerequisites
--------------
+## Prerequisites
 
 KanjiPad uses the GTK+ toolkit, version 2.0; it's been mostly developed
 on Unix and Linux, but with version 2.0 of GTK+, it can also be
@@ -66,8 +63,7 @@ this installed, but if not, you can get it from:
   http://www.gnu.org/software/make/
 
 
-Installation
-------------
+## Installation
 
 * Make sure that pkg-config is in your path, and if you installed
   GTK+ in a different prefix than pkg-config, that PKG_CONFIG_PATH
@@ -81,8 +77,7 @@ Installation
   [ Become root if necessary ]
    make install
 
-Use
----
+## Use
 
 Draw your character into the large box, and click on "引"
 (The upper button, abbreviating "look up")
@@ -112,8 +107,7 @@ characters for automated testing.
 If "Annotate" in the character menu is selected, the strokes
 will be annotated with their order.
 
-License
--------
+## License
 
 KanjiPad is Copyright 1997-1999, 2002 Owen Taylor, and licensed under
 the terms of the GNU Public License. See the file COPYING for details.
@@ -121,7 +115,7 @@ the terms of the GNU Public License. See the file COPYING for details.
 See the file jstroke/readme.txt for information about the license
 and copyright of JStroke.
 
-Owen Taylor <otaylor@gtk.org>
-October 27, 1997
-March   19, 1999 [ update for GTK+-1.2 ]
-August  25, 2002 [ update for GTK+-2.0 ]
+Owen Taylor <otaylor@gtk.org></br>
+October 27, 1997</br>
+March   19, 1999 [ update for GTK+-1.2 ]</br>
+August  25, 2002 [ update for GTK+-2.0 ]</br>
