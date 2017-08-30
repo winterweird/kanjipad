@@ -210,10 +210,20 @@ int main (int argc, char **argv) {
   gtk_box_pack_start(GTK_BOX(main_vbox), hseparator, FALSE, FALSE, 0);
   gtk_widget_show(hseparator);
 
+  // add scroll window for results display
+  
+  scrollingResults = gtk_scrolled_window_new(NULL, NULL);
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollingResults),
+          GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  gtk_widget_set_size_request(scrollingResults, 0, RESULTS_SCROLL_WINDOW_SIZE);
+  gtk_box_pack_start(GTK_BOX(main_vbox), scrollingResults, FALSE, FALSE, 0);
+  gtk_widget_hide(scrollingResults); // for now
+
   // add box for adding information from jisho.org
   results_display_box = gtk_vbox_new(FALSE, 0);
-  gtk_box_pack_start(GTK_BOX(main_vbox), results_display_box, FALSE, FALSE, 0);
+  gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrollingResults), results_display_box);
   gtk_widget_show(results_display_box);
+
 
   // note: none of this is actually really displaying, I'm not sure why
 //  label = gtk_label_new("Search Jisho.org");

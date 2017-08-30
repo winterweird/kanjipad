@@ -161,6 +161,7 @@ void query_jisho(GtkWidget* w) {
 
 void clear_search_field(GtkWidget* w) {
     gtk_entry_set_text(GTK_ENTRY(jukugo_entry), "");
+    gtk_widget_hide(scrollingResults); // hide results
 }
 
 void annotate_callback(GtkCheckMenuItem* menu_item, gpointer user_data) {

@@ -30,6 +30,16 @@ void display_results(const char* results) {
     const char* datPath[] = {"data", 0}; // look at datPath!
     yajl_val dat = yajl_tree_get(root_node, datPath, yajl_t_array);
 
+    // clean results box
+    GList *children;
+    children = gtk_container_get_children(GTK_CONTAINER(results_display_box));
+    for (GList* it = children; it != NULL; it = g_list_next(it)) {
+        gtk_widget_destroy(GTK_WIDGET(it->data));
+    }
+    g_list_free(children);
+    
+    gtk_widget_show(scrollingResults); // show results box
+    
     if (dat == NULL) {
         g_printerr("Path not found: data (array)\n");
         exit(1);
