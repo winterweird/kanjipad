@@ -117,7 +117,7 @@ int main (int argc, char **argv) {
   // window creation and setup
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_window_set_resizable (GTK_WINDOW (window), TRUE);
-  gtk_window_set_default_size (GTK_WINDOW (window), 350, 350);
+  gtk_window_set_default_size (GTK_WINDOW (window), WINDOW_WIDTH, WINDOW_HEIGHT);
 
   g_signal_connect (window, "destroy",
 		    G_CALLBACK (exit_callback), NULL);
