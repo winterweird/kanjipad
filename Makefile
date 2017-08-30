@@ -1,7 +1,7 @@
 OPTIMIZE=-g -Wall
 #OPTIMIZE=-O2 
 
-GTKINC=$(shell pkg-config --cflags gtk+-2.0) -DG_DISABLE_DEPRECATED  -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
+GTKINC=$(shell pkg-config --cflags gtk+-2.0) -DG_DISABLE_DEPRECATED  -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED -I.
 GTKLIBS=$(shell pkg-config --libs gtk+-2.0)
 GLIBLIBS=$(shell pkg-config --libs glib-2.0)
 
@@ -41,7 +41,7 @@ util.o: jstroke/util.c
 kpengine: $(OBJS)
 	$(CC) -o kpengine $(OBJS) $(GLIBLIBS) $(LDFLAGS) $(GTKLIBS)
 
-kanjipad: kanjipad.o padarea.o karea.o global_vars.o callbacks.o engine.o sensitivity.o jisho_search.o
+kanjipad: kanjipad.o padarea.o karea.o global_vars.o callbacks.o engine.o sensitivity.o jisho_search.o json_to_gtk.o
 	$(CC) -o kanjipad $^ $(GTKLIBS) $(LDFLAGS) $(LIBS)
 
 jdata.dat: jstroke/strokedata.h conv_jdata.pl

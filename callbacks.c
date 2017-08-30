@@ -27,6 +27,7 @@
 #include "kanjipad.h" // pad_area functions
 #include "sensitivity.h" // update_sensitivity
 #include "jisho_search.h" // jisho_search_keyword
+#include "json_to_gtk.h" // display_results
 
 void exit_callback(GtkWidget* w) {
     exit(0);
@@ -152,7 +153,7 @@ void query_jisho(GtkWidget* w) {
         g_printerr("Could not fetch data for query '%s' from jisho\n", searchTerm);
     }
     else {
-        printf("results:\n%s\n", results);
+        display_results(results);
 
         free(results);
     }
