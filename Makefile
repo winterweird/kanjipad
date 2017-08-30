@@ -5,6 +5,9 @@ GTKINC=$(shell pkg-config --cflags gtk+-2.0) -DG_DISABLE_DEPRECATED  -DGDK_DISAB
 GTKLIBS=$(shell pkg-config --libs gtk+-2.0)
 GLIBLIBS=$(shell pkg-config --libs glib-2.0)
 
+# location where lib files used for the build are found
+BUILD_LIBDIR = .
+BUILD_LIBPATHS = $(prefix -L,BUILD_LIBDIR)
 LIBS = -lm
 
 PREFIX=/usr/local
@@ -28,7 +31,7 @@ PACKAGE = kanjipad
 VERSION = 2.0.0
 
 OBJS = kpengine.o scoring.o util.o
-CFLAGS = $(OPTIMIZE) $(GTKINC) -DFOR_PILOT_COMPAT -DKP_LIBDIR=\"$(LIBDIR)\" -DBINDIR=\"$(BINDIR)\"
+CFLAGS = $(OPTIMIZE) $(GTKINC) -DFOR_PILOT_COMPAT -DKP_LIBDIR=\"$(LIBDIR)\" -DBINDIR=\"$(BINDIR)\" $(BUILD_LIBPATHS)
 
 all: kpengine kanjipad jdata.dat
 
@@ -42,7 +45,7 @@ kpengine: $(OBJS)
 	$(CC) -o kpengine $(OBJS) $(GLIBLIBS) $(LDFLAGS) $(GTKLIBS)
 
 kanjipad: kanjipad.o padarea.o karea.o global_vars.o callbacks.o engine.o sensitivity.o jisho_search.o json_to_gtk.o
-	$(CC) -o kanjipad $^ $(GTKLIBS) $(LDFLAGS) $(LIBS)
+	$(CC) -o kanjipad -L. $^ $(GTKLIBS) $(LDFLAGS) $(LIBS) -lyajl_s
 
 jdata.dat: jstroke/strokedata.h conv_jdata.pl
 	perl conv_jdata.pl < jstroke/strokedata.h > jdata.dat
