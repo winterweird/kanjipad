@@ -205,6 +205,16 @@ int main (int argc, char **argv) {
   g_signal_connect(jukugo_entry, "key_press_event",
           G_CALLBACK(jukugo_keypress_callback), NULL);
 
+  // another hseparator
+  hseparator = gtk_hseparator_new();
+  gtk_box_pack_start(GTK_BOX(main_vbox), hseparator, FALSE, FALSE, 0);
+  gtk_widget_show(hseparator);
+
+  // add box for adding information from jisho.org
+  results_display_box = gtk_vbox_new(FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(main_vbox), results_display_box, FALSE, FALSE, 0);
+  gtk_widget_show(results_display_box);
+
   // note: none of this is actually really displaying, I'm not sure why
 //  label = gtk_label_new("Search Jisho.org");
 //  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);

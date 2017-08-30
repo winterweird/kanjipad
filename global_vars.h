@@ -32,6 +32,7 @@ extern GtkWidget* clear_button;
 extern GtkWidget* undo_button;
 extern GtkWidget* lookup_button;
 extern GtkWidget* jukugo_entry;
+extern GtkWidget* results_display_box;
 extern GtkUIManager* ui_manager;
 
 extern kp_wchar kanjiguess[MAX_GUESSES];

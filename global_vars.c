@@ -27,6 +27,7 @@ GtkWidget *clear_button;
 GtkWidget *undo_button;
 GtkWidget *lookup_button;
 GtkWidget *jukugo_entry;
+GtkWidget *results_display_box;
 GtkUIManager *ui_manager;
 
 kp_wchar kanjiguess[MAX_GUESSES];

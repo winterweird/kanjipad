@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "json_to_gtk.h"
 #include "yajl/yajl_tree.h"
+#include "global_vars.h"
 
 void display_results(const char* results) {
     // TODO: figure out
