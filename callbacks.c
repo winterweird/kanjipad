@@ -136,6 +136,8 @@ void append_jukugo_callback(GtkWidget* w) {
         gtk_entry_buffer_insert_text(buffer, len, string_utf, -1);
 
         g_free(string_utf);
+
+        clear_callback(w); // make ready for next input
     }
 }
 
