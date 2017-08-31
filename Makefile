@@ -1,14 +1,11 @@
 OPTIMIZE=-g -Wall
 #OPTIMIZE=-O2 
 
-GTKINC=$(shell pkg-config --cflags gtk+-2.0) -DG_DISABLE_DEPRECATED  -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED -I.
+GTKINC=$(shell pkg-config --cflags gtk+-2.0) -DG_DISABLE_DEPRECATED  -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
 GTKLIBS=$(shell pkg-config --libs gtk+-2.0)
 GLIBLIBS=$(shell pkg-config --libs glib-2.0)
 
-# location where lib files used for the build are found
-BUILD_LIBDIR = .
-BUILD_LIBPATHS = $(prefix -L,BUILD_LIBDIR)
-LIBS = -lm
+LIBS = -lm -lyajl_s
 
 PREFIX=/usr/local
 DATADIR=$(PREFIX)/share
@@ -17,6 +14,13 @@ DATADIR=$(PREFIX)/share
 BINDIR=$(PREFIX)/bin
 # location in which data files will be installed
 LIBDIR=$(DATADIR)/kanjipad
+
+
+# YAJL paths
+# NOTE: Assuming the person building has git, cmake and make installed
+YAJL_BASE = yajl/yajl-2.1.1
+YAJL_LIB = $(YAJL_BASE)/lib
+YAJL_INC = $(YAJL_BASE)/include
 
 #
 # On Win32, uncomment the following to avoid getting console windows
@@ -31,9 +35,16 @@ PACKAGE = kanjipad
 VERSION = 2.0.0
 
 OBJS = kpengine.o scoring.o util.o
-CFLAGS = $(OPTIMIZE) $(GTKINC) -DFOR_PILOT_COMPAT -DKP_LIBDIR=\"$(LIBDIR)\" -DBINDIR=\"$(BINDIR)\" $(BUILD_LIBPATHS)
+CFLAGS = $(OPTIMIZE) -I$(YAJL_INC) $(GTKINC) -DFOR_PILOT_COMPAT -DKP_LIBDIR=\"$(LIBDIR)\" -DBINDIR=\"$(BINDIR)\"
 
 all: kpengine kanjipad jdata.dat
+
+$(YAJL_LIB): $(YAJL_BASE)
+$(YAJL_INC): $(YAJL_BASE)
+
+$(YAJL_BASE):
+	-git clone git://github.com/lloyd/yajl
+	cd yajl/ && cmake . &&  make
 
 scoring.o: jstroke/scoring.c
 	$(CC) -c -o scoring.o $(CFLAGS) $(LIBS) -Ijstroke jstroke/scoring.c 
@@ -45,7 +56,9 @@ kpengine: $(OBJS)
 	$(CC) -o kpengine $(OBJS) $(GLIBLIBS) $(LDFLAGS) $(GTKLIBS)
 
 kanjipad: kanjipad.o padarea.o karea.o global_vars.o callbacks.o engine.o sensitivity.o jisho_search.o json_to_gtk.o
-	$(CC) -o kanjipad -L. $^ $(GTKLIBS) $(LDFLAGS) $(LIBS) -lyajl_s
+	$(CC) -o kanjipad -I$(YAJL_INC) -L$(YAJL_LIB) $^ $(GTKLIBS) $(LDFLAGS) $(LIBS)
+	
+json_to_gtk.o: $(YAJL_LIB) $(YAJL_INC)
 
 jdata.dat: jstroke/strokedata.h conv_jdata.pl
 	perl conv_jdata.pl < jstroke/strokedata.h > jdata.dat
@@ -60,7 +73,7 @@ install: kanjipad kpengine jdata.dat
 	install -m 0644 ui.xml ~/.kanjipad/ui.xml
 
 clean:
-	rm -rf *.o jdata.dat kpengine kanjipad
+	rm -rf *.o jdata.dat kpengine kanjipad yajl
 
 $(PACKAGE).spec: $(PACKAGE).spec.in
 	( sed s/@VERSION@/$(VERSION)/ < $< > $@.tmp && mv $@.tmp $@ ) || ( rm $@.tmp && false )
