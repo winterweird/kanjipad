@@ -63,14 +63,22 @@ json_to_gtk.o: $(YAJL_LIB) $(YAJL_INC)
 jdata.dat: jstroke/strokedata.h conv_jdata.pl
 	perl conv_jdata.pl < jstroke/strokedata.h > jdata.dat
 
+# using primitive commands because the install command apparently doesn't work
+# on all systems
 install: kanjipad kpengine jdata.dat
-	install -d $(DESTDIR)$(BINDIR)
-	install -m 0755 kanjipad $(DESTDIR)$(BINDIR)/kanjipad
-	install -m 0755 kpengine $(DESTDIR)$(BINDIR)/kpengine
-	install -d $(DESTDIR)$(LIBDIR)
-	install -m 0644 jdata.dat $(DESTDIR)$(LIBDIR)/jdata.dat
-	install -d ~/.kanjipad
-	install -m 0644 ui.xml ~/.kanjipad/ui.xml
+	mkdir -p $(DESTDIR)$(BINDIR)
+	cp kanjipad $(DESTDIR)$(BINDIR)/kanjipad
+	chmod 0755 $(DESTDIR)$(BINDIR)/kanjipad
+	cp kpengine $(DESTDIR)$(BINDIR)/kpengine
+	chmod 0755 $(DESTDIR)$(BINDIR)/kpengine
+	
+	mkdir -p $(DESTDIR)$(LIBDIR)
+	cp jdata.dat $(DESTDIR)$(LIBDIR)/jdata.dat
+	chmod 0644 $(DESTDIR)$(LIBDIR)/jdata.dat
+	
+	mkdir -p ~/.kanjipad
+	cp ui.xml ~/.kanjipad/ui.xml
+	chmod 0644 ~/.kanjipad/ui.xml
 
 clean:
 	rm -rf *.o jdata.dat kpengine kanjipad yajl
