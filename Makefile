@@ -35,7 +35,7 @@ PACKAGE = kanjipad
 VERSION = 2.0.0
 
 OBJS = kpengine.o scoring.o util.o
-CFLAGS = $(OPTIMIZE) -I$(YAJL_INC) $(GTKINC) -DFOR_PILOT_COMPAT -DKP_LIBDIR=\"$(LIBDIR)\" -DBINDIR=\"$(BINDIR)\"
+CFLAGS = $(OPTIMIZE) -std=c99 -I$(YAJL_INC) $(GTKINC) -DFOR_PILOT_COMPAT -DKP_LIBDIR=\"$(LIBDIR)\" -DBINDIR=\"$(BINDIR)\"
 
 all: kpengine kanjipad jdata.dat
 
