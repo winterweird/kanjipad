@@ -332,6 +332,8 @@ int main (int argc, char **argv) {
   /* Area in which to draw guesses */
 
   GtkWidget* scrollingSuggestions = gtk_scrolled_window_new(NULL, NULL);
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollingSuggestions),
+          GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
   gtk_box_pack_start(GTK_BOX(main_hbox), scrollingSuggestions, FALSE, FALSE, 0);
   gtk_widget_show(scrollingSuggestions);
 
