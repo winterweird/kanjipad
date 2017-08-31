@@ -45,6 +45,9 @@ GIOChannel *to_engine;
 char *data_file = NULL;
 const char *progname;
 
+int WINDOW_WIDTH = DEFAULT_WINDOW_WIDTH;
+int WINDOW_HEIGHT = DEFAULT_WINDOW_HEIGHT;
+
 GtkActionEntry entries[] = {
 
     { "FileMenuAction", NULL, "_File" },                  /* name, stock id, label */

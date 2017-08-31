@@ -62,7 +62,11 @@
 
 // print usage and exit
 void usage () {
-  fprintf(stderr, "Usage: %s [-f/--data-file FILE]\n", progname);
+  fprintf(stderr, "Usage: %s [OPTIONS]\n", progname);
+  fprintf(stderr, "Valid options:\n");
+  fprintf(stderr, "   -f/--data-file FILE\n");
+  fprintf(stderr, "   -w/--window-width INT\n");
+  fprintf(stderr, "   -h/--window-height INT\n");
   exit (1);
 }
 
@@ -86,6 +90,36 @@ void handleArgs(int argc, char** argv) {
                 data_file = argv[i];
             else
                 usage();
+        }
+        else if (strcmp(argv[i], "--window-width") == 0 || strcmp(argv[i], "-w") == 0) {
+            // set custom width
+            i++;
+            if (i < argc) {
+                char* end;
+                char* endOfArg = argv[i] + strlen(argv[i]);
+                int argAsInt = (int)strtol(argv[i], &end, 10);
+                if (end != endOfArg) {
+                    usage();
+                }
+                else {
+                    WINDOW_WIDTH = argAsInt;
+                }
+            }
+        }
+        else if (strcmp(argv[i], "--window-height") == 0 || strcmp(argv[i], "-h") == 0) {
+            // set custom height
+            i++;
+            if (i < argc) {
+                char* end;
+                char* endOfArg = argv[i] + strlen(argv[i]);
+                int argAsInt = (int)strtol(argv[i], &end, 10);
+                if (end != endOfArg) {
+                    usage();
+                }
+                else {
+                    WINDOW_HEIGHT = argAsInt;
+                }
+            }
         }
         else {
             usage();

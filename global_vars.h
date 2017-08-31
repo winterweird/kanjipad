@@ -50,6 +50,9 @@ extern GIOChannel* to_engine;
 extern char* data_file;
 extern const char* progname;
 
+extern int WINDOW_WIDTH;
+extern int WINDOW_HEIGHT;
+
 // 9 is hardcoded based on the count I made earlier, this might create problems.
 extern GtkActionEntry entries[9];
 
