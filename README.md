@@ -1,3 +1,22 @@
+NOTE: This version of KanjiPad is an updated version forked by me, which
+integrates querying jisho.org using its API into the program. Some features have
+been added and some have been modified. The original version of the README -
+updated to markdown format - can be found below.
+
+I take no credit for any part of this project other than the modifications and
+additions I have made. This project, even in its current form, has the potential
+to be useful for me, and hopefully it might also be useful to someone else.
+
+An important feature which has been added: a search box! Also, a scrolling
+suggestion box. Double click a suggested kanji (or mark it and press Ctrl+A) in
+order to add it to the search box. Click the arrow to query jisho.org or the
+cross-marked button to clear the search box. Aside from that, the usage of this
+program is probably quite intuitive, as long as you remember that the number of
+strokes (and their order) matters.
+
+I might add more notes about features and/or usage later on. Best regards! -
+Vegard
+
 # KanjiPad
 
 KanjiPad is a very simple program for handwriting recognition -
