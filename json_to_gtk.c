@@ -37,13 +37,21 @@
 // NOTE: allocates memory - call free on return value
 // NOTE: if kanji is NULL (and reading isn't), set "kanji" to be reading
 static char* withReading(const char* kanji, const char* reading) {
-    if (kanji == NULL)
+    if (kanji == NULL) {
+        // reading is guaranteed to not simultaneously be NULL
         kanji = reading; // pretend reading is kanji
+        reading = ""; // we have no use for the reading now!
+    }
+    else if (reading == NULL) {
+        reading = ""; // not sure why this makes a difference, but whatever.
+    }
     char* ret = malloc(strlen(kanji) + strlen(reading) + strlen(" \xe3\x80\x90\xe3\x80\x91") + 1);
     strcpy(ret, kanji);
-    strcat(ret, " \xe3\x80\x90"); // left black lenticular bracket
-    strcat(ret, reading);
-    strcat(ret, "\xe3\x80\x91"); // right black lenticular bracket
+    if (strlen(reading) != 0) {
+        strcat(ret, " \xe3\x80\x90"); // left black lenticular bracket
+        strcat(ret, reading);
+        strcat(ret, "\xe3\x80\x91"); // right black lenticular bracket
+    }
     return ret;
 }
 
@@ -123,7 +131,11 @@ GtkWidget* getforms(yajl_val entry, int from, int to) {
     for (int i = from; i < to; i++) {
         yajl_val word = YAJL_GET_ARRAY(entry)->values[i];
         yajl_val w = yajl_get_soft(word, "word", yajl_t_string);
-        yajl_val r = yajl_get(word, "reading", yajl_t_string);
+        yajl_val r = yajl_get_soft(word, "reading", yajl_t_string);
+        if (w == NULL && r == NULL) {
+            g_printerr("Error: neither word nor reading found; skipping\n");
+            continue;
+        }
 
         char* kanjiWithReading = withReading(YAJL_GET_STRING(w), YAJL_GET_STRING(r));
 
@@ -159,10 +171,10 @@ static GtkWidget* displayEntry(yajl_val entryElement) {
         yajl_val word = YAJL_GET_ARRAY(japaneseArr)->values[0];
         
         // get kanji (or word or whatever)
-        yajl_val w = yajl_get(word, "word", yajl_t_string);
+        yajl_val w = yajl_get_soft(word, "word", yajl_t_string);
         
         // get reading
-        yajl_val r = yajl_get(word, "reading", yajl_t_string);
+        yajl_val r = yajl_get_soft(word, "reading", yajl_t_string);
         
         // get kanji with reading in fancy dictionary parentheses
         char* kanjiWithReading = withReading(YAJL_GET_STRING(w), YAJL_GET_STRING(r));
@@ -170,8 +182,8 @@ static GtkWidget* displayEntry(yajl_val entryElement) {
         free(kanjiWithReading);
         
         // handle whether word is common
-        yajl_val iscommon = yajl_get(entryElement, "is_common", yajl_t_any);
-        if (YAJL_IS_TRUE(iscommon)) {
+        yajl_val iscommon = yajl_get_soft(entryElement, "is_common", yajl_t_any);
+        if (iscommon != NULL && YAJL_IS_TRUE(iscommon)) {
             table_addlabel(entrytable, "Common word", 0, 1);
         }
         // add some space
