@@ -67,6 +67,7 @@ void usage () {
   fprintf(stderr, "   -f/--data-file FILE\n");
   fprintf(stderr, "   -w/--window-width INT\n");
   fprintf(stderr, "   -h/--window-height INT\n");
+  fprintf(stderr, "   -r/--window-resizable 0/1\n");
   exit (1);
 }
 
@@ -105,6 +106,9 @@ void handleArgs(int argc, char** argv) {
                     WINDOW_WIDTH = argAsInt;
                 }
             }
+            else {
+                usage();
+            }
         }
         else if (strcmp(argv[i], "--window-height") == 0 || strcmp(argv[i], "-h") == 0) {
             // set custom height
@@ -120,9 +124,32 @@ void handleArgs(int argc, char** argv) {
                     WINDOW_HEIGHT = argAsInt;
                 }
             }
+            else {
+                usage();
+            }
+        }
+        else if (strcmp(argv[i], "--window-resizable") == 0 || strcmp(argv[i], "-r") == 0) {
+            // override resizability
+            i++;
+            if (i < argc) {
+                if (strlen(argv[i]) == 1) {
+                    if (*argv[i] == '0' || *argv[i] == '1') {
+                        WINDOW_RESIZABLE = (*argv[i]) - '0';
+                    }
+                    else {
+                        usage(); // wow
+                    }
+                }
+                else {
+                    usage(); // look at this staircase
+                }
+            }
+            else {
+                usage(); // isn't it cool?
+            }
         }
         else {
-            usage();
+            usage(); // I'm glad I did this
         }
     }
 }
@@ -152,6 +179,11 @@ int main (int argc, char **argv) {
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_window_set_resizable (GTK_WINDOW (window), TRUE);
   gtk_window_set_default_size (GTK_WINDOW (window), WINDOW_WIDTH, WINDOW_HEIGHT);
+
+  if (!WINDOW_RESIZABLE) {
+      // this makes the window more persistent in keeping its size
+      gtk_widget_set_size_request (GTK_WINDOW (window), WINDOW_WIDTH, WINDOW_HEIGHT);
+  }
 
   g_signal_connect (window, "destroy",
 		    G_CALLBACK (exit_callback), NULL);
@@ -249,7 +281,17 @@ int main (int argc, char **argv) {
   scrollingResults = gtk_scrolled_window_new(NULL, NULL);
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollingResults),
           GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-  gtk_widget_set_size_request(scrollingResults, 0, RESULTS_SCROLL_WINDOW_SIZE);
+
+  // NOTE: min/max apparently doesn't exist in standard C according to one
+  // random stackoverflow post I came across. I might implement it later.
+  int spaceWeNeed = WINDOW_HEIGHT - 65; // calculated by trial and error
+  if (WINDOW_RESIZABLE || RESULTS_SCROLL_WINDOW_SIZE < spaceWeNeed)
+      gtk_widget_set_size_request(scrollingResults, 0, RESULTS_SCROLL_WINDOW_SIZE);
+  else
+      // we want a bit of margin, because if it fills the entire window we can't
+      // really remove it .-. BUGS AND WORKAROUNDS
+      gtk_widget_set_size_request(scrollingResults, 0, spaceWeNeed);
+
   gtk_box_pack_start(GTK_BOX(main_vbox), scrollingResults, FALSE, FALSE, 0);
   gtk_widget_hide(scrollingResults); // for now
 

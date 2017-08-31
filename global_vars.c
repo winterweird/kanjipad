@@ -47,6 +47,7 @@ const char *progname;
 
 int WINDOW_WIDTH = DEFAULT_WINDOW_WIDTH;
 int WINDOW_HEIGHT = DEFAULT_WINDOW_HEIGHT;
+int WINDOW_RESIZABLE = 1;
 
 GtkActionEntry entries[] = {
 
