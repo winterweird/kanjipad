@@ -283,7 +283,8 @@ void display_results(const char* results) {
 
     for (int i = 0; i < YAJL_GET_ARRAY(dat)->len; i++) {
         GtkWidget* entry = displayEntry(YAJL_GET_ARRAY(dat)->values[i]);
-        gtk_table_attach_defaults(GTK_TABLE(entries), entry, 0, 1, i, i+1);
+        // for some reason, removing this line fixes the weird error messages
+//        gtk_table_attach_defaults(GTK_TABLE(entries), entry, 0, 1, i, i+1);
         gtk_widget_show(entry);
     } 
     
