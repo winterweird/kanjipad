@@ -90,7 +90,7 @@ GtkActionEntry entries[] = {
 and the selected character to a file \"samples.dat\" in the \
 current directory. This is intended for making a file of \
 characters for automated testing",
-      G_CALLBACK (save_callback) }  
+      G_CALLBACK (save_callback) }
 };
 
 guint n_entries = G_N_ELEMENTS (entries);
@@ -104,7 +104,12 @@ GtkToggleActionEntry toggle_entries[] = {
     { "AutoLookupAction", NULL,
       "_Auto Lookup", NULL,  
       "Lookup when a stroke is drawn",
-      G_CALLBACK (auto_look_up_callback), TRUE }
+      G_CALLBACK (auto_look_up_callback), TRUE },
+
+    { "KeyboardAction", NULL,
+        "_Keyboard", NULL,
+        "Toggle keyboard visibility",
+        G_CALLBACK (toggle_keyboard_callback), TRUE }
 };
 
 guint n_toggle_entries = G_N_ELEMENTS (toggle_entries);

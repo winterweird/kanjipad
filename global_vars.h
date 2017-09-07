@@ -60,8 +60,9 @@ extern GtkActionEntry entries[9];
 
 extern guint n_entries;
 
-// 2 is similarly hardcoded
-extern GtkToggleActionEntry toggle_entries[2];
+// 3 is similarly hardcoded
+// NOTE: was 2 until I added the option to toggle a virtual keyboard
+extern GtkToggleActionEntry toggle_entries[3];
 
 extern guint n_toggle_entries;
 

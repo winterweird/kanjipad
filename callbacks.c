@@ -194,6 +194,10 @@ void auto_look_up_callback(GtkCheckMenuItem* menu_item, gpointer user_data) {
     pad_area_set_auto_look_up (pad_area, is_auto_look_up);
 }
 
+void toggle_keyboard_callback(GtkCheckMenuItem* menu_item, gpointer user_data) {
+    // TODO: Implement
+}
+
 gboolean handle_keypress_callback(GtkWidget* widget, GdkEventKey* event, gpointer user_data) {
     if (event->state & GDK_CONTROL_MASK) {
         switch (event->keyval) {

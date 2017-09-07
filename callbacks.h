@@ -36,6 +36,7 @@ void query_jisho();
 void clear_search_field();
 void annotate_callback(GtkCheckMenuItem *menu_item, gpointer user_data);
 void auto_look_up_callback(GtkCheckMenuItem *menu_item, gpointer user_data);
+void toggle_keyboard_callback(GtkCheckMenuItem *menu_item, gpointer user_data);
 
 // function which handles keypresses (bound to window)
 gboolean handle_keypress_callback(GtkWidget *widget, GdkEventKey *event, gpointer user_data);
