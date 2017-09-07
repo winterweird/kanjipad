@@ -22,6 +22,7 @@
 #include "global_vars.h"
 #include <errno.h> // errno
 #include <stdlib.h> // exit
+#include <string.h> // exit
 #include <gdk/gdkkeysyms.h>  // event codes
 #include "karea.h" // utf8_for_char
 #include "kanjipad.h" // pad_area functions
@@ -154,6 +155,23 @@ void query_jisho(GtkWidget* w) {
     }
     else {
         display_results(results);
+        
+        // add link to jisho
+        // NOTE: Ideally I wouldn't have to add this every time, but this is a
+        // quick fix, and it doesn't make for that bad UI.
+        jishoLink = gtk_link_button_new("Open search in browser");
+        gtk_box_pack_start(GTK_BOX(results_display_box), jishoLink, TRUE, TRUE, 0);
+        gtk_widget_show(jishoLink);
+        
+        // construct a URL linking to the jisho.org search corresponding to the
+        // query
+        // NOTE: This is after the "display results" part because of ~the
+        // display results function deleting everything in the results box and
+        // me being too lazy to dive into that~ TECHNICAL REASONS
+        char url[265]; // probably sufficient... like, what?
+        strcpy(url, "http://www.jisho.org/search/");
+        strncat(url, searchTerm, sizeof url - strlen(url) - 1); // not sure I need the -1 but whever
+        gtk_link_button_set_uri(GTK_LINK_BUTTON(jishoLink), url);
 
         free(results);
     }

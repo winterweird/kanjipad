@@ -25,6 +25,9 @@
  *  thanks to the creator! Check it out at http://lloyd.github.io/yajl/
  */
 
+// TODO: read http://linux-buddy.blogspot.no/2013/12/gtk-example-linkbutton-button-to-open.html
+// Right now I'm too sleepy to fix anything.
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -258,7 +261,7 @@ void display_results(const char* results) {
     g_list_free(children);
     
     gtk_widget_show(scrollingResults); // show results box
-    
+
     // find data
     const char* datPath[] = {"data", 0}; // look at datPath!
     yajl_val dat = yajl_tree_get(root_node, datPath, yajl_t_array);

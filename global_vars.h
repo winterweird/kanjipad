@@ -34,6 +34,7 @@ extern GtkWidget* lookup_button;
 extern GtkWidget* jukugo_entry;
 extern GtkWidget* results_display_box;
 extern GtkWidget* scrollingResults;
+extern GtkWidget* jishoLink;
 extern GtkUIManager* ui_manager;
 
 extern kp_wchar kanjiguess[MAX_GUESSES];
