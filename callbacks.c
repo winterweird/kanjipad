@@ -183,6 +183,51 @@ void clear_search_field(GtkWidget* w) {
     gtk_widget_hide(scrollingResults); // hide results
 }
 
+void insert_char_callback(GtkWidget* w, gpointer user_data) {
+    char ch = (char) user_data;
+    char chstr[2] = {0};
+    chstr[0] = ch;
+    
+    // get current position, insert text, and set the position to the updated
+    // point
+    int pos = gtk_editable_get_position(GTK_EDITABLE(jukugo_entry));
+    gtk_editable_insert_text(GTK_EDITABLE(jukugo_entry), chstr, 1, &pos);
+    gtk_editable_set_position(GTK_EDITABLE(jukugo_entry), pos);
+}
+
+void delete_char_callback(GtkWidget* w, gpointer user_data) {
+    // delete selected text if text is selected
+    // if not, get current position, delete char in front of it
+    GtkEditable* entry = GTK_EDITABLE(jukugo_entry);
+    int start, end;
+    if (!gtk_editable_get_selection_bounds(entry, &start, &end)) {
+        end = gtk_editable_get_position(entry);
+        start = end-1;
+    }
+    if (end == 0) return; // can't delete text before the first character
+    else {
+        gtk_editable_delete_text(entry, start, end);
+    }
+}
+
+void cursor_pos_left_callback(GtkWidget* w) {
+    int pos = gtk_editable_get_position(GTK_EDITABLE(jukugo_entry));
+    if (pos > 0) pos--;
+    gtk_editable_set_position(GTK_EDITABLE(jukugo_entry), pos);
+}
+
+void cursor_pos_right_callback(GtkWidget* w) {
+    int pos = gtk_editable_get_position(GTK_EDITABLE(jukugo_entry));
+
+    // get endpos
+    // NOTE: this should be easier than such...
+    gtk_editable_set_position(GTK_EDITABLE(jukugo_entry), -1);
+    int endPos = gtk_editable_get_position(GTK_EDITABLE(jukugo_entry));
+    
+    if (pos < endPos) pos++;
+    gtk_editable_set_position(GTK_EDITABLE(jukugo_entry), pos);
+}
+
 void annotate_callback(GtkCheckMenuItem* menu_item, gpointer user_data) {
     //gboolean is_annotate = gtk_check_menu_item_get_active(menu_item);
     gboolean is_annotate = !pad_area->annotate;
