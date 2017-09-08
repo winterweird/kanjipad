@@ -38,4 +38,7 @@
 // whether or not the keyboard is initially visible
 #define KBD_INIT_VISIBLE FALSE
 
+// virtual keyboard button size
+#define KBD_BUTTON_SIZE 25
+
 #endif /* KANJIPAD_PREPROCESSOR_DEFINITIONS_HEADER */
