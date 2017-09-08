@@ -60,6 +60,9 @@ kanjipad: kanjipad.o padarea.o karea.o global_vars.o callbacks.o engine.o sensit
 	
 json_to_gtk.o: $(YAJL_LIB) $(YAJL_INC)
 
+# in order to have these headers considered in the build process
+global_vars.o: datastructure_definitions.h preprocessor_definitions.h
+
 jdata.dat: jstroke/strokedata.h conv_jdata.pl
 	perl conv_jdata.pl < jstroke/strokedata.h > jdata.dat
 

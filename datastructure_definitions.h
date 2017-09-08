@@ -44,6 +44,7 @@ typedef struct {
 
 typedef struct _Keyboard {
     gboolean isVisible;
+    gboolean isSetup;
     GtkWidget* kbdWidget;
 } Keyboard;
 

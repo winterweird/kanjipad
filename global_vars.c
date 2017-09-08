@@ -37,7 +37,7 @@ int num_guesses = 0;
 kp_wchar kselected;
 
 PadArea *pad_area;
-Keyboard keyboard;
+Keyboard keyboard = {KBD_INIT_VISIBLE, FALSE, NULL};
 
 /* globals for engine communication */
 int engine_pid;
@@ -110,7 +110,7 @@ GtkToggleActionEntry toggle_entries[] = {
     { "KeyboardAction", NULL,
         "_Keyboard", NULL,
         "Toggle keyboard visibility",
-        G_CALLBACK (toggle_keyboard_callback), TRUE }
+        G_CALLBACK (toggle_keyboard_callback), KBD_INIT_VISIBLE }
 };
 
 guint n_toggle_entries = G_N_ELEMENTS (toggle_entries);

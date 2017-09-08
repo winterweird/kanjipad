@@ -35,4 +35,7 @@
 #define DEFAULT_WINDOW_WIDTH 350
 #define DEFAULT_WINDOW_HEIGHT 350
 
+// whether or not the keyboard is initially visible
+#define KBD_INIT_VISIBLE FALSE
+
 #endif /* KANJIPAD_PREPROCESSOR_DEFINITIONS_HEADER */
