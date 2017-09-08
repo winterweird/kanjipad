@@ -37,6 +37,7 @@ int num_guesses = 0;
 kp_wchar kselected;
 
 PadArea *pad_area;
+Keyboard keyboard;
 
 /* globals for engine communication */
 int engine_pid;

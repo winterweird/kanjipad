@@ -42,6 +42,7 @@ extern int num_guesses;
 extern kp_wchar kselected;
 
 extern PadArea* pad_area;
+extern Keyboard keyboard;
 
 /* globals for engine communication */
 extern int engine_pid;

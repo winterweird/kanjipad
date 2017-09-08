@@ -29,6 +29,7 @@
 #include "sensitivity.h" // update_sensitivity
 #include "jisho_search.h" // jisho_search_keyword
 #include "json_to_gtk.h" // display_results
+#include "keyboard.h" // keyboard_set_visible
 
 void exit_callback(GtkWidget* w) {
     exit(0);
@@ -195,7 +196,8 @@ void auto_look_up_callback(GtkCheckMenuItem* menu_item, gpointer user_data) {
 }
 
 void toggle_keyboard_callback(GtkCheckMenuItem* menu_item, gpointer user_data) {
-    // TODO: Implement
+    gboolean keyboard_visible = !keyboard.isVisible;
+    keyboard_set_visible(keyboard_visible);
 }
 
 gboolean handle_keypress_callback(GtkWidget* widget, GdkEventKey* event, gpointer user_data) {

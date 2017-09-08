@@ -55,7 +55,7 @@ util.o: jstroke/util.c
 kpengine: $(OBJS)
 	$(CC) -o kpengine $(OBJS) $(GLIBLIBS) $(LDFLAGS) $(GTKLIBS)
 
-kanjipad: kanjipad.o padarea.o karea.o global_vars.o callbacks.o engine.o sensitivity.o jisho_search.o json_to_gtk.o
+kanjipad: kanjipad.o padarea.o karea.o global_vars.o callbacks.o engine.o sensitivity.o jisho_search.o json_to_gtk.o keyboard.o
 	$(CC) -o kanjipad -I$(YAJL_INC) -L$(YAJL_LIB) $^ $(GTKLIBS) $(LDFLAGS) $(LIBS)
 	
 json_to_gtk.o: $(YAJL_LIB) $(YAJL_INC)

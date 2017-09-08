@@ -42,4 +42,9 @@ typedef struct {
   gchar d[2];
 } kp_wchar;
 
+typedef struct _Keyboard {
+    gboolean isVisible;
+    GtkWidget* kbdWidget;
+} Keyboard;
+
 #endif /* KANJIPAD_DATASTRUCTURE_DEFINITIONS_HEADER */
