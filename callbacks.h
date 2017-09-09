@@ -38,9 +38,11 @@ void insert_char_callback();
 void delete_char_callback();
 void cursor_pos_left_callback();
 void cursor_pos_right_callback();
+void replace_hiragana_callback();
 void annotate_callback(GtkCheckMenuItem *menu_item, gpointer user_data);
 void auto_look_up_callback(GtkCheckMenuItem *menu_item, gpointer user_data);
 void toggle_keyboard_callback(GtkCheckMenuItem *menu_item, gpointer user_data);
+void toggle_hiragana_replace_callback(GtkCheckMenuItem *menu_item, gpointer user_data);
 
 // function which handles keypresses (bound to window)
 gboolean handle_keypress_callback(GtkWidget *widget, GdkEventKey *event, gpointer user_data);

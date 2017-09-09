@@ -16,6 +16,7 @@
       <menuitem name="Annotate" action="AnnotateAction"/>
       <menuitem name="AutoLookup" action="AutoLookupAction"/>
       <menuitem name="Keyboard" action="KeyboardAction"/>
+      <menuitem name="ReplaceHiragana" action="ReplaceHiraganaAction"/>
     </menu>
   </menubar>
 </ui>

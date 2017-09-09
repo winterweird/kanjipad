@@ -41,4 +41,7 @@
 // virtual keyboard button size
 #define KBD_BUTTON_SIZE 25
 
+// whether or not romaji should be autoreplaced with hiragana initially
+#define HIRAGANA_INIT_REPLACE TRUE
+
 #endif /* KANJIPAD_PREPROCESSOR_DEFINITIONS_HEADER */

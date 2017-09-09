@@ -37,6 +37,9 @@ extern GtkWidget* scrollingResults;
 extern GtkWidget* jishoLink;
 extern GtkUIManager* ui_manager;
 
+// required for advanced signal handling
+extern gulong jukugo_entry_insert_text_handler_id;
+
 extern kp_wchar kanjiguess[MAX_GUESSES];
 extern int num_guesses;
 extern kp_wchar kselected;
@@ -56,14 +59,17 @@ extern int WINDOW_WIDTH;
 extern int WINDOW_HEIGHT;
 extern int WINDOW_RESIZABLE;
 
+extern gboolean hiragana_replace;
+
 // 9 is hardcoded based on the count I made earlier, this might create problems.
 extern GtkActionEntry entries[9];
 
 extern guint n_entries;
 
-// 3 is similarly hardcoded
-// NOTE: was 2 until I added the option to toggle a virtual keyboard
-extern GtkToggleActionEntry toggle_entries[3];
+// 4 is similarly hardcoded
+// NOTE: was 2 until I added the option to toggle a virtual keyboard and option
+// to toggle autoreplace roman letters with hiragana
+extern GtkToggleActionEntry toggle_entries[4];
 
 extern guint n_toggle_entries;
 

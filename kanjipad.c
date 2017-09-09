@@ -182,7 +182,7 @@ int main (int argc, char **argv) {
 
   if (!WINDOW_RESIZABLE) {
       // this makes the window more persistent in keeping its size
-      gtk_widget_set_size_request (GTK_WINDOW (window), WINDOW_WIDTH, WINDOW_HEIGHT);
+      gtk_widget_set_size_request (window, WINDOW_WIDTH, WINDOW_HEIGHT);
   }
 
   g_signal_connect (window, "destroy",
@@ -270,6 +270,8 @@ int main (int argc, char **argv) {
 
   g_signal_connect(jukugo_entry, "key_press_event",
           G_CALLBACK(jukugo_keypress_callback), NULL);
+  jukugo_entry_insert_text_handler_id = g_signal_connect_after(jukugo_entry, "insert-text",
+          G_CALLBACK(replace_hiragana_callback), NULL);
 
   // another hseparator
   hseparator = gtk_hseparator_new();

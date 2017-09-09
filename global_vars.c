@@ -32,6 +32,8 @@ GtkWidget *scrollingResults;
 GtkWidget *jishoLink;
 GtkUIManager *ui_manager;
 
+gulong jukugo_entry_insert_text_handler_id;
+
 kp_wchar kanjiguess[MAX_GUESSES];
 int num_guesses = 0;
 kp_wchar kselected;
@@ -50,6 +52,8 @@ const char *progname;
 int WINDOW_WIDTH = DEFAULT_WINDOW_WIDTH;
 int WINDOW_HEIGHT = DEFAULT_WINDOW_HEIGHT;
 int WINDOW_RESIZABLE = 1;
+
+gboolean hiragana_replace = HIRAGANA_INIT_REPLACE;
 
 GtkActionEntry entries[] = {
 
@@ -108,9 +112,14 @@ GtkToggleActionEntry toggle_entries[] = {
       G_CALLBACK (auto_look_up_callback), TRUE },
 
     { "KeyboardAction", NULL,
-        "_Keyboard", NULL,
-        "Toggle keyboard visibility",
-        G_CALLBACK (toggle_keyboard_callback), KBD_INIT_VISIBLE }
+      "_Keyboard", NULL,
+      "Toggle keyboard visibility",
+      G_CALLBACK (toggle_keyboard_callback), KBD_INIT_VISIBLE },
+    
+    { "ReplaceHiraganaAction", NULL,
+      "_Replace Hiragana", NULL,
+      "Replace roman letters with hiragana",
+      G_CALLBACK (toggle_hiragana_replace_callback), HIRAGANA_INIT_REPLACE }
 };
 
 guint n_toggle_entries = G_N_ELEMENTS (toggle_entries);
