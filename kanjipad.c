@@ -35,18 +35,11 @@
  * Vegard Itland.
  */
 
-// TODO: I have to properly display the info returned from jisho
 // TODO: Query caching?
 
 #include <gtk/gtk.h>
-//#include <gtk/gtkcheckmenuitem.h> // removed due to refactoring
-//#include <gdk/gdkkeysyms.h>  // added for keyboard interaction purposes
-//#include <ctype.h>  // removed due to refactoring
-//#include <errno.h>  // removed due to refactoring
 #include <stdlib.h>
-//#include <stdio.h>  // removed due to refactoring
 #include <string.h>
-//#include <unistd.h> // removed due to refactoring
 
 #include "kanjipad.h"
 #include "karea.h"       // added for refactoring purposes
@@ -128,6 +121,9 @@ void handleArgs(int argc, char** argv) {
                 usage();
             }
         }
+        else if (strcmp(argv[i], "--keyboard-on-focus") == 0 || strcmp(argv[i], "-k") == 0) {
+            KEYBOARD_ON_ENTRY_FOCUS = 1;
+        }
         else if (strcmp(argv[i], "--window-resizable") == 0 || strcmp(argv[i], "-r") == 0) {
             // override resizability
             i++;
@@ -199,7 +195,6 @@ int main (int argc, char **argv) {
 
   /* Menu */
     GtkActionGroup      *action_group;          /* Packing group for our Actions */
-    GtkUIManager        *menu_manager;          /* The magic widget! */
     GError              *error;                 /* For reporting exceptions or errors */
     GtkWidget           *toolbar;               /* The actual toolbar */
     
@@ -272,6 +267,10 @@ int main (int argc, char **argv) {
           G_CALLBACK(jukugo_keypress_callback), NULL);
   jukugo_entry_insert_text_handler_id = g_signal_connect_after(jukugo_entry, "insert-text",
           G_CALLBACK(replace_hiragana_callback), NULL);
+  if (KEYBOARD_ON_ENTRY_FOCUS) {
+      g_signal_connect(jukugo_entry, "button-press-event",
+              G_CALLBACK(show_keyboard_callback), NULL);
+  }
 
   // another hseparator
   hseparator = gtk_hseparator_new();

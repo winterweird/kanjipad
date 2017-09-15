@@ -3,7 +3,7 @@
 #include "callbacks.h"
 
 void keyboard_set_visible(gboolean isVisible) {
-    if (isVisible != keyboard.isVisible) {
+if (isVisible != keyboard.isVisible) {
         keyboard.isVisible = isVisible;
         keyboard_init_display();
     }
@@ -68,6 +68,11 @@ void keyboard_init_display() {
         
         // make keyboard always on top of main window
         gtk_window_set_transient_for(GTK_WINDOW(keyboard.kbdWidget), GTK_WINDOW(toplevel));
+        
+        if (KEYBOARD_ON_ENTRY_FOCUS) {
+            g_signal_connect(toplevel, "focus-in-event",
+                    G_CALLBACK(hide_keyboard_callback), NULL);
+        }
 
         // main vbox in keyboard
         GtkWidget* kbdvbox = gtk_vbox_new(FALSE, 0);

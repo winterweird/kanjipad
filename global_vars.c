@@ -31,6 +31,7 @@ GtkWidget *results_display_box;
 GtkWidget *scrollingResults;
 GtkWidget *jishoLink;
 GtkUIManager *ui_manager;
+GtkUIManager *menu_manager;
 
 gulong jukugo_entry_insert_text_handler_id;
 
@@ -52,6 +53,7 @@ const char *progname;
 int WINDOW_WIDTH = DEFAULT_WINDOW_WIDTH;
 int WINDOW_HEIGHT = DEFAULT_WINDOW_HEIGHT;
 int WINDOW_RESIZABLE = 1;
+int KEYBOARD_ON_ENTRY_FOCUS = 0;
 
 gboolean hiragana_replace = HIRAGANA_INIT_REPLACE;
 

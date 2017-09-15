@@ -21,9 +21,6 @@
 #define KANJIPAD_CALLBACK_FUNCTIONS_HEADER
 
 #include <gtk/gtkcheckmenuitem.h>
-//#include <gdk/gdkkeysyms.h>  // event codes
-//#include <gdk/gdk.h>
-//#include <gtk/gtk.h>
 
 void exit_callback();
 void undo_callback();
@@ -39,6 +36,8 @@ void delete_char_callback();
 void cursor_pos_left_callback();
 void cursor_pos_right_callback();
 void replace_hiragana_callback();
+void show_keyboard_callback();
+void hide_keyboard_callback();
 void annotate_callback(GtkCheckMenuItem *menu_item, gpointer user_data);
 void auto_look_up_callback(GtkCheckMenuItem *menu_item, gpointer user_data);
 void toggle_keyboard_callback(GtkCheckMenuItem *menu_item, gpointer user_data);

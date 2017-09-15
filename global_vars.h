@@ -36,6 +36,7 @@ extern GtkWidget* results_display_box;
 extern GtkWidget* scrollingResults;
 extern GtkWidget* jishoLink;
 extern GtkUIManager* ui_manager;
+extern GtkUIManager* menu_manager;
 
 // required for advanced signal handling
 extern gulong jukugo_entry_insert_text_handler_id;
@@ -58,6 +59,7 @@ extern const char* progname;
 extern int WINDOW_WIDTH;
 extern int WINDOW_HEIGHT;
 extern int WINDOW_RESIZABLE;
+extern int KEYBOARD_ON_ENTRY_FOCUS;
 
 extern gboolean hiragana_replace;
 
