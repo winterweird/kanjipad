@@ -58,9 +58,15 @@ void usage () {
   fprintf(stderr, "Usage: %s [OPTIONS]\n", progname);
   fprintf(stderr, "Valid options:\n");
   fprintf(stderr, "   -f/--data-file FILE\n");
+  fprintf(stderr, "       Specify an output file for testing purposes\n");
   fprintf(stderr, "   -w/--window-width INT\n");
+  fprintf(stderr, "       Override the default window width (default = 350)\n");
   fprintf(stderr, "   -h/--window-height INT\n");
-  fprintf(stderr, "   -r/--window-resizable 0/1\n");
+  fprintf(stderr, "       Override the default window height (default = 350)\n");
+  fprintf(stderr, "   -r/--window-not-resizable\n");
+  fprintf(stderr, "       Make window fixed-size (useful for small screens)\n");
+  fprintf(stderr, "   -k/--keyboard-on-focus\n");
+  fprintf(stderr, "       Display keyboard when entry box selected, hide when keyboard unfocused\n");
   exit (1);
 }
 
@@ -122,30 +128,16 @@ void handleArgs(int argc, char** argv) {
             }
         }
         else if (strcmp(argv[i], "--keyboard-on-focus") == 0 || strcmp(argv[i], "-k") == 0) {
+            // keyboard is shown when entry is selected and hidden once main
+            // window regains focus
             KEYBOARD_ON_ENTRY_FOCUS = 1;
         }
-        else if (strcmp(argv[i], "--window-resizable") == 0 || strcmp(argv[i], "-r") == 0) {
+        else if (strcmp(argv[i], "--window-not-resizable") == 0 || strcmp(argv[i], "-r") == 0) {
             // override resizability
-            i++;
-            if (i < argc) {
-                if (strlen(argv[i]) == 1) {
-                    if (*argv[i] == '0' || *argv[i] == '1') {
-                        WINDOW_RESIZABLE = (*argv[i]) - '0';
-                    }
-                    else {
-                        usage(); // wow
-                    }
-                }
-                else {
-                    usage(); // look at this staircase
-                }
-            }
-            else {
-                usage(); // isn't it cool?
-            }
+            WINDOW_RESIZABLE = 0;
         }
         else {
-            usage(); // I'm glad I did this
+            usage();
         }
     }
 }
