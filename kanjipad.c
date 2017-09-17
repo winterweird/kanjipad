@@ -150,6 +150,7 @@ int main (int argc, char **argv) {
   GtkWidget *main_vbox;
   GtkWidget *menubar;
   GtkWidget *vbox;
+  GtkWidget *buttons_vbox;
   GtkWidget *label;
   
   GtkAccelGroup *accel_group;
@@ -321,7 +322,13 @@ int main (int argc, char **argv) {
   vseparator = gtk_vseparator_new();
   gtk_box_pack_start (GTK_BOX (main_hbox), vseparator, FALSE, FALSE, 0);
   gtk_widget_show (vseparator);
-  
+
+  // put the vbox for the buttons in the window
+  buttons_vbox = gtk_vbox_new(FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(main_hbox), buttons_vbox, FALSE, FALSE, 0);
+  gtk_widget_show(buttons_vbox);
+
+
   /* Area in which to draw guesses */
 
   GtkWidget* scrollingSuggestions = gtk_scrolled_window_new(NULL, NULL);
@@ -370,7 +377,7 @@ int main (int argc, char **argv) {
   g_signal_connect (button, "clicked",
 		    G_CALLBACK (look_up_callback), NULL);
 
-  gtk_box_pack_start (GTK_BOX (vbox), button, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (buttons_vbox), button, FALSE, FALSE, 0);
   gtk_widget_show (button);
 
   label = gtk_label_new ("\xe6\x88\xbb");
@@ -383,7 +390,7 @@ int main (int argc, char **argv) {
   g_signal_connect (button, "clicked",
 		    G_CALLBACK (undo_callback), NULL);
 
-  gtk_box_pack_start (GTK_BOX (vbox), button, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (buttons_vbox), button, FALSE, FALSE, 0);
   gtk_widget_show (button);
   
   label = gtk_label_new ("\xe6\xb6\x88");
@@ -396,7 +403,7 @@ int main (int argc, char **argv) {
   g_signal_connect (button, "clicked",
 		    G_CALLBACK (clear_callback), NULL);
 
-  gtk_box_pack_start (GTK_BOX (vbox), button, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (buttons_vbox), button, FALSE, FALSE, 0);
   gtk_widget_show (button);
 
   // make a label for clearing input from search box
