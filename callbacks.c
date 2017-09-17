@@ -258,7 +258,7 @@ static const char* matchesHiragana(const char* ch, int len) {
     if (strcmp(ch, "ki") == 0) { return "\xe3\x81\x8d"; /* hiragana ki */ }
     if (strcmp(ch, "kya") == 0) { return "\xe3\x81\x8d\xe3\x82\x83"; /* hiragana kya */ }
     if (strcmp(ch, "kyu") == 0) { return "\xe3\x81\x8d\xe3\x82\x85"; /* hiragana kyu */ }
-    if (strcmp(ch, "kyo") == 0) { return "\xe3\x82\x8d\xe3\x82\x87"; /* hiragana kyo */ }
+    if (strcmp(ch, "kyo") == 0) { return "\xe3\x81\x8d\xe3\x82\x87"; /* hiragana kyo */ }
     if (strcmp(ch, "gi") == 0) { return "\xe3\x81\x8e"; /* hiragana gi */ }
     if (strcmp(ch, "gya") == 0) { return "\xe3\x81\x8e\xe3\x82\x83"; /* hiragana gya */ }
     if (strcmp(ch, "gyu") == 0) { return "\xe3\x81\x8e\xe3\x82\x85"; /* hiragana gyu */ }
