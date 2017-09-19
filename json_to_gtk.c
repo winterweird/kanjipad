@@ -122,6 +122,40 @@ char* getmeanings(yajl_val entry) {
     return meaningList;
 }
 
+// Helper method: does equally weird shit and makes it work
+char* getpartsofspeech(yajl_val entry) {
+    // ensure that there is a failsafe
+    char* failsafe = NULL;
+    
+    yajl_val partsOfSpeech = yajl_get_soft(entry, "parts_of_speech", yajl_t_array);
+    if (partsOfSpeech == NULL) return failsafe;
+    
+    int arrlen = YAJL_GET_ARRAY(partsOfSpeech)->len;
+    
+    if (arrlen == 0) return failsafe;
+
+    free(failsafe);
+    
+    char* pofspeechList;
+    yajl_val d = YAJL_GET_ARRAY(partsOfSpeech)->values[0];
+    const char* first = YAJL_GET_STRING(d);
+    pofspeechList = malloc(strlen(first) + 1);
+    strcpy(pofspeechList, first);
+
+    for (int j = 1; j < arrlen; j++) {
+        d = YAJL_GET_ARRAY(partsOfSpeech)->values[j];
+        pofspeechList = semicat(pofspeechList, YAJL_GET_STRING(d));
+    }
+
+    char* ret = malloc(strlen("<b></b>") + strlen(pofspeechList) + 1);
+    strcpy(ret, "<b>");
+    strcat(ret, pofspeechList);
+    strcat(ret, "</b>");
+    free(pofspeechList);
+    
+    return ret;
+}
+
 // Helper method: does even weirder shit and makes it work
 GtkWidget* getforms(yajl_val entry, int from, int to) {
     if (to == -1) {
@@ -197,15 +231,39 @@ static GtkWidget* displayEntry(yajl_val entryElement) {
 
         yajl_val senses = yajl_get(entryElement, "senses", yajl_t_array);
         int senselen = YAJL_GET_ARRAY(senses)->len;
-        GtkWidget* sensetab = gtk_table_new(senselen, 1, FALSE);
+        
+        GtkWidget* sensetab = gtk_table_new(senselen*2, 1, FALSE);
         gtk_widget_show(sensetab);
 
         for (int i = 0; i < senselen; i++) {
             yajl_val sense = YAJL_GET_ARRAY(senses)->values[i];
 
             char* meanings = getmeanings(sense);
-            table_addlabel(sensetab, meanings, i, 0);
+            char* partsOfSpeech = getpartsofspeech(sense);
+            if (partsOfSpeech) {
+                // TODO: I should sort this into a separate function (or
+                // actually, two) to simplify it when I have to actually make
+                // labels
+                GtkWidget* psplb = gtk_label_new(NULL);
+                gtk_label_set_markup(GTK_LABEL(psplb), partsOfSpeech);
+                
+                // function call should go here
+                
+                gtk_misc_set_alignment(GTK_MISC(psplb), 0, 0.5);
+                
+                // make labels wrap
+                gtk_label_set_line_wrap(GTK_LABEL(psplb), TRUE);
+                // the "subtract 10" is to avoid the scrollbar overlapping, the -1 means
+                // that the height is automatically caluclated
+                gtk_widget_set_size_request(psplb, WINDOW_WIDTH/2 - 10, -1);
+                
+                gtk_table_attach_defaults(GTK_TABLE(sensetab), psplb, 0, 1, 2*i, 2*i+1);
+                gtk_widget_show(psplb);
+            }
+            table_addlabel(sensetab, meanings, 2*i+1, 0);
+            
             free(meanings);
+            free(partsOfSpeech);
         }
 
         gtk_table_attach_defaults(GTK_TABLE(entrytable), sensetab, 1, 2, 2, 3);
