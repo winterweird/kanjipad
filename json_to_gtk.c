@@ -25,9 +25,6 @@
  *  thanks to the creator! Check it out at http://lloyd.github.io/yajl/
  */
 
-// TODO: read http://linux-buddy.blogspot.no/2013/12/gtk-example-linkbutton-button-to-open.html
-// Right now I'm too sleepy to fix anything.
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -112,8 +109,10 @@ char* getmeanings(yajl_val entry) {
     char* meaningList;
     yajl_val d = YAJL_GET_ARRAY(engdefArr)->values[0]; // assuming there is at least one meaning
     const char* first = YAJL_GET_STRING(d);
-    meaningList = malloc(strlen(first) + 1);
-    strcpy(meaningList, first);
+    const char* bullet = "\xe2\x80\xa2" " "; // placeholder
+    meaningList = malloc(strlen(bullet) + strlen(first) + 1);
+    strcpy(meaningList, bullet);
+    strcat(meaningList, first);
     
     for (int j = 1; j < arrlen; j++) {
         d = YAJL_GET_ARRAY(engdefArr)->values[j];
