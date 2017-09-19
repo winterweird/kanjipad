@@ -58,7 +58,7 @@ void keyboard_reposition() {
 void keyboard_init_display() {
     if (!keyboard.isSetup) {
         keyboard.kbdWidget = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-        gtk_widget_set_size_request(keyboard.kbdWidget, WINDOW_WIDTH, 3*KBD_BUTTON_SIZE);
+        gtk_widget_set_size_request(keyboard.kbdWidget, WINDOW_WIDTH, 4*KBD_BUTTON_SIZE);
         gtk_window_set_decorated(GTK_WINDOW(keyboard.kbdWidget), FALSE);
         gtk_window_set_skip_taskbar_hint(GTK_WINDOW(keyboard.kbdWidget), TRUE);
 
@@ -145,6 +145,23 @@ void keyboard_init_display() {
         gtk_widget_set_size_request(button, KBD_BUTTON_SIZE, KBD_BUTTON_SIZE);
         g_signal_connect(button, "clicked", 
                 G_CALLBACK(cursor_pos_right_callback), NULL);
+        gtk_widget_show(button);
+        gtk_box_pack_start(GTK_BOX(row), button, FALSE, FALSE, 0);
+
+        // space bar at the very end
+        row = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(kbdvbox), row, FALSE, FALSE, 0);
+        gtk_widget_show(row);
+        
+        label = gtk_label_new(" "); // space
+        gtk_widget_show(label);
+        
+        button = gtk_button_new();
+        gtk_container_add(GTK_CONTAINER(button), label);
+        // set to be the width of the entire row
+        gtk_widget_set_size_request(button, KBD_BUTTON_SIZE*11, KBD_BUTTON_SIZE);
+        g_signal_connect(button, "clicked",
+                G_CALLBACK(insert_char_callback), (void*)' ');
         gtk_widget_show(button);
         gtk_box_pack_start(GTK_BOX(row), button, FALSE, FALSE, 0);
         

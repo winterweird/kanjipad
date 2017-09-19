@@ -383,7 +383,8 @@ static const char* matchesHiragana(const char* ch, int len) {
     if (strcmp(ch, "xwa") == 0) { return "\xe3\x82\x8e"; /* hiragana small wa */ }
     if (strcmp(ch, "wa") == 0) { return "\xe3\x82\x8f"; /* hiragana wa */ }
     if (strcmp(ch, "wo") == 0) { return "\xe3\x82\x92"; /* hiragana wo */ }
-    if (strcmp(ch, "nn") == 0) { return "\xe3\x82\x93"; /* hiragana n */ }
+    if (strcmp(ch, "nn") == 0) { return "\xe3\x82\x93" "n"; /* hiragana nn */ }
+    if (strcmp(ch, "n ") == 0) { return "\xe3\x82\x93"; /* hiragana n */ }
     if (strcmp(ch, "vv") == 0) { return "\xe3\x81\xa3" "v"; /* hiragana vv */ }
     if (strcmp(ch, "vu") == 0) { return "\xe3\x82\x94"; /* hiragana vu */ }
     if (strcmp(ch, "va") == 0) { return "\xe3\x82\x94\xe3\x81\x81"; /* hiragana va */ }
