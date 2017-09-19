@@ -247,6 +247,9 @@ static const char* matchesHiragana(const char* ch, int len) {
     if (strcmp(ch, "i") == 0) { return "\xe3\x81\x84"; /* hiragana i */ }
     if (strcmp(ch, "xu") == 0) { return "\xe3\x81\x85"; /* hiragana small u */ }
     if (strcmp(ch, "u") == 0) { return "\xe3\x81\x86"; /* hiragana u */ }
+    if (strcmp(ch, "wu") == 0) { return "\xe3\x81\x86\xe3\x81\x85"; /* hiragana wu */ }
+    if (strcmp(ch, "wi") == 0) { return "\xe3\x81\x86\xe3\x81\x83"; /* hiragana wi */ }
+    if (strcmp(ch, "we") == 0) { return "\xe3\x81\x86\xe3\x81\x87"; /* hiragana we */ }
     if (strcmp(ch, "xe") == 0) { return "\xe3\x81\x87"; /* hiragana small e */ }
     if (strcmp(ch, "e") == 0) { return "\xe3\x81\x88"; /* hiragana e */ }
     if (strcmp(ch, "xo") == 0) { return "\xe3\x81\x89"; /* hiragana small o */ }
@@ -298,15 +301,19 @@ static const char* matchesHiragana(const char* ch, int len) {
     if (strcmp(ch, "cha") == 0) { return "\xe3\x81\xa1\xe3\x82\x83"; /* hiragana cha */ }
     if (strcmp(ch, "chu") == 0) { return "\xe3\x81\xa1\xe3\x82\x85"; /* hiragana chu */ }
     if (strcmp(ch, "cho") == 0) { return "\xe3\x81\xa1\xe3\x82\x87"; /* hiragana cho */ }
-    if (strcmp(ch, "di") == 0) { return "\xe3\x81\xa2"; /* hiragana (d)ji */ }
+    if (strcmp(ch, "dji") == 0) { return "\xe3\x81\xa2"; /* hiragana (d)ji */ }
     if (strcmp(ch, "xtsu") == 0) { return "\xe3\x81\xa3"; /* hiragana small tsu */ }
     if (strcmp(ch, "tsu") == 0) { return "\xe3\x81\xa4"; /* hiragana tsu */ }
     if (strcmp(ch, "dzu") == 0) { return "\xe3\x81\xa5"; /* hiragana dzu */ }
-    if (strcmp(ch, "du") == 0) { return "\xe3\x81\xa5"; /* hiragana dzu */ }
+//    if (strcmp(ch, "du") == 0) { return "\xe3\x81\xa5"; /* hiragana dzu */ }
     if (strcmp(ch, "te") == 0) { return "\xe3\x81\xa6"; /* hiragana te */ }
+    if (strcmp(ch, "ti") == 0) { return "\xe3\x81\xa6\xe3\x81\x83"; /* hiragana ti */ }
     if (strcmp(ch, "de") == 0) { return "\xe3\x81\xa7"; /* hiragana de */ }
+    if (strcmp(ch, "di") == 0) { return "\xe3\x81\xa7\xe3\x81\x83"; /* hiragana di */ }
     if (strcmp(ch, "to") == 0) { return "\xe3\x81\xa8"; /* hiragana to */ }
+    if (strcmp(ch, "tu") == 0) { return "\xe3\x81\xa8\xe3\x81\x85"; /* hiragana tu */ }
     if (strcmp(ch, "do") == 0) { return "\xe3\x81\xa9"; /* hiragana do */ }
+    if (strcmp(ch, "du") == 0) { return "\xe3\x81\xa9\xe3\x81\x85"; /* hiragana du */ }
     if (strcmp(ch, "na") == 0) { return "\xe3\x81\xaa"; /* hiragana na */ }
     if (strcmp(ch, "ni") == 0) { return "\xe3\x81\xab"; /* hiragana ni */ }
     if (strcmp(ch, "nya") == 0) { return "\xe3\x81\xab\xe3\x82\x83"; /* hiragana nya */ }
@@ -335,6 +342,10 @@ static const char* matchesHiragana(const char* ch, int len) {
     if (strcmp(ch, "pyu") == 0) { return "\xe3\x81\xb4\xe3\x82\x85"; /* hiragana pyu */ }
     if (strcmp(ch, "pyo") == 0) { return "\xe3\x81\xb4\xe3\x82\x87"; /* hiragana pyo */ }
     if (strcmp(ch, "fu") == 0) { return "\xe3\x81\xb5"; /* hiragana fu */ }
+    if (strcmp(ch, "fa") == 0) { return "\xe3\x81\xb5\xe3\x81\x81"; /* hiragana fa */ }
+    if (strcmp(ch, "fi") == 0) { return "\xe3\x81\xb5\xe3\x81\x83"; /* hiragana fi */ }
+    if (strcmp(ch, "fe") == 0) { return "\xe3\x81\xb5\xe3\x81\x87"; /* hiragana fe */ }
+    if (strcmp(ch, "fo") == 0) { return "\xe3\x81\xb5\xe3\x81\x89"; /* hiragana fo */ }
     if (strcmp(ch, "bu") == 0) { return "\xe3\x81\xb6"; /* hiragana bu */ }
     if (strcmp(ch, "pu") == 0) { return "\xe3\x81\xb7"; /* hiragana pu */ }
     if (strcmp(ch, "he") == 0) { return "\xe3\x81\xb8"; /* hiragana he */ }
@@ -373,8 +384,12 @@ static const char* matchesHiragana(const char* ch, int len) {
     if (strcmp(ch, "wa") == 0) { return "\xe3\x82\x8f"; /* hiragana wa */ }
     if (strcmp(ch, "wo") == 0) { return "\xe3\x82\x92"; /* hiragana wo */ }
     if (strcmp(ch, "nn") == 0) { return "\xe3\x82\x93"; /* hiragana n */ }
-    if (strcmp(ch, "vv") == 0) { return "\xe3\x81\xa3" "v"; /* hiragana ww */ }
+    if (strcmp(ch, "vv") == 0) { return "\xe3\x81\xa3" "v"; /* hiragana vv */ }
     if (strcmp(ch, "vu") == 0) { return "\xe3\x82\x94"; /* hiragana vu */ }
+    if (strcmp(ch, "va") == 0) { return "\xe3\x82\x94\xe3\x81\x81"; /* hiragana va */ }
+    if (strcmp(ch, "vi") == 0) { return "\xe3\x82\x94\xe3\x81\x83"; /* hiragana vi */ }
+    if (strcmp(ch, "ve") == 0) { return "\xe3\x82\x94\xe3\x81\x87"; /* hiragana ve */ }
+    if (strcmp(ch, "vo") == 0) { return "\xe3\x82\x94\xe3\x81\x89"; /* hiragana vo */ }
     if (strcmp(ch, "xka") == 0) { return "\xe3\x82\x95"; /* hiragana small ka */ }
     if (strcmp(ch, "xke") == 0) { return "\xe3\x82\x96"; /* hiragana small ke */ }
 
