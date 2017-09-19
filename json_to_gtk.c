@@ -71,11 +71,8 @@ static yajl_val yajl_get(yajl_val root, const char* id, yajl_type type) {
     return ret;
 }
 
-// Helper method: simpler way to add aligned table
-// NOTE: I'm assuming that the arguments are "x align" and "y align" (haven't
-// checked)
-static void table_addlabel_aligned(GtkWidget* w, const char* text, int row, int col, double xalign, double yalign) {
-    GtkWidget* label = gtk_label_new(text);
+// Helper method: simpler way to add aligned label to table
+static void table_addlabell_aligned(GtkWidget* w, GtkWidget* label, int row, int col, double xalign, double yalign) {
     gtk_misc_set_alignment(GTK_MISC(label), xalign, yalign);
     
     // make labels wrap
@@ -86,6 +83,19 @@ static void table_addlabel_aligned(GtkWidget* w, const char* text, int row, int 
     
     gtk_table_attach_defaults(GTK_TABLE(w), label, col, col+1, row, row+1);
     gtk_widget_show(label);
+}
+
+// Helper method: simpler way to add label to table (alignment defaults to 0, 0.5)
+static void table_addlabell(GtkWidget* w, GtkWidget* label, int row, int col) {
+    table_addlabell_aligned(w, label, row, col, 0, 0.5);
+}
+
+// Helper method: simpler way to add aligned table
+// NOTE: I'm assuming that the arguments are "x align" and "y align" (haven't
+// checked)
+static void table_addlabel_aligned(GtkWidget* w, const char* text, int row, int col, double xalign, double yalign) {
+    GtkWidget* label = gtk_label_new(text);
+    table_addlabell_aligned(w, label, row, col, xalign, yalign);
 }
 
 // Helper method: simpler way to add label to table (alignment defaults to 0, 0.5)
@@ -134,8 +144,6 @@ char* getpartsofspeech(yajl_val entry) {
     
     if (arrlen == 0) return failsafe;
 
-    free(failsafe);
-    
     char* pofspeechList;
     yajl_val d = YAJL_GET_ARRAY(partsOfSpeech)->values[0];
     const char* first = YAJL_GET_STRING(d);
@@ -147,6 +155,7 @@ char* getpartsofspeech(yajl_val entry) {
         pofspeechList = semicat(pofspeechList, YAJL_GET_STRING(d));
     }
 
+    // add bold formatting
     char* ret = malloc(strlen("<b></b>") + strlen(pofspeechList) + 1);
     strcpy(ret, "<b>");
     strcat(ret, pofspeechList);
@@ -241,24 +250,9 @@ static GtkWidget* displayEntry(yajl_val entryElement) {
             char* meanings = getmeanings(sense);
             char* partsOfSpeech = getpartsofspeech(sense);
             if (partsOfSpeech) {
-                // TODO: I should sort this into a separate function (or
-                // actually, two) to simplify it when I have to actually make
-                // labels
                 GtkWidget* psplb = gtk_label_new(NULL);
                 gtk_label_set_markup(GTK_LABEL(psplb), partsOfSpeech);
-                
-                // function call should go here
-                
-                gtk_misc_set_alignment(GTK_MISC(psplb), 0, 0.5);
-                
-                // make labels wrap
-                gtk_label_set_line_wrap(GTK_LABEL(psplb), TRUE);
-                // the "subtract 10" is to avoid the scrollbar overlapping, the -1 means
-                // that the height is automatically caluclated
-                gtk_widget_set_size_request(psplb, WINDOW_WIDTH/2 - 10, -1);
-                
-                gtk_table_attach_defaults(GTK_TABLE(sensetab), psplb, 0, 1, 2*i, 2*i+1);
-                gtk_widget_show(psplb);
+                table_addlabell(sensetab, psplb, 2*i, 0);
             }
             table_addlabel(sensetab, meanings, 2*i+1, 0);
             
