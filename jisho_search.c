@@ -34,12 +34,18 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <curl/curl.h> /* curl_easy_escape */
 
 // returns dynamically allocated memory which must be freed.
 // Most of the implementation details owe thanks to this StackOverflow post:
 // https://stackoverflow.com/a/22135885/4498826
 char* jisho_search_keyword(const char* keyword) {
     
+    CURL* curl = curl_easy_init();
+    if (!curl) {
+        g_printerr("Error creating curl for escaping strings");
+        return NULL;
+    }
     int portno = 80;
     char* host = "www.jisho.org";
     char* message_fmt =
@@ -52,7 +58,9 @@ Host: jisho.org\r\n\r\n";
     char message[1024], response[65535];
 
     // build the GET request
-    sprintf(message, message_fmt, keyword);
+    char* escapedKw = curl_easy_escape(curl, keyword, 0);
+    sprintf(message, message_fmt, escapedKw);
+    curl_free(escapedKw);
 
     // create the socket
     sockfd = socket(AF_INET, SOCK_STREAM, 0);

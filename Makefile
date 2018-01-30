@@ -5,7 +5,7 @@ GTKINC=$(shell pkg-config --cflags gtk+-2.0) -DG_DISABLE_DEPRECATED  -DGDK_DISAB
 GTKLIBS=$(shell pkg-config --libs gtk+-2.0)
 GLIBLIBS=$(shell pkg-config --libs glib-2.0)
 
-LIBS = -lm -lyajl_s
+LIBS = -lm -lyajl_s -lcurl
 
 PREFIX=/usr/local
 DATADIR=$(PREFIX)/share
